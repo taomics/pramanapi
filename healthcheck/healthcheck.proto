@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package healthcheck;
+
+// healthcheck_items.json の定義です。
+message HealthCheckItem {
+	enum Id {
+		HEIGHT = 1;                                // 身長 (mm) 
+		WEIGHT = 2;                                // 体重 (g)
+		WAIST = 3;                                 // 腹囲 (mm)
+		BLOOD_PRESSURE_SYSTOLIC = 4;               // 収縮期血圧 (mmHg)
+		BLOOD_PRESSURE_DIASTOLIC = 5;              // 拡張期血圧 (mmHg)
+		ASPARTATE_TRANSAMINASE = 6;                // 肝機能 AST (U/L)
+		ALANINE_TRANSAMINASE = 7;                  // 肝機能 ALT (U/L)
+		GAMMA_GLUTAMYL_TRANSPEPTIDASE = 8;         // γ-GTP (U/L)
+		CREATININE = 9;                            // クレアチニン (μg/dL)
+		ESTIMATED_GLOMERULAR_FILTRATION_RATE = 10; // eGFR, 推算糸球体濾過量 (μL/min)
+		URIC_ACID = 11;                            // 尿酸 (μg/dL)
+		TRIGLYCERIDES = 12;                        // トリグリセリド, 中性脂肪 (μg/dL)
+		HIGH_DENSITY_LIPOPROTEIN = 13;             // HDL コレステロール (μg/dL)
+		LOW_DENSITY_LIPOPROTEIN = 14;              // LDL コレステロール (μg/dL)
+		BLOOD_SUGAR_LEVEL = 15;                    // 空腹時血糖値 (μg/dL)
+		HEMOGLOBIN_A1C = 16;                       // HbA1c (bp) 
+	}
+
+	enum Unit {
+		GRAM = 1;                    // g
+		MILLIMETER = 2;              // mm
+		MILLIMETER_OF_MERCURY = 3;   // mmHg
+		ENZYME_UNIT_PER_LITER = 4;   // U/L
+		MICROGRAM_PER_DECILITER = 5; // μg/dL
+		MICROLITER_PER_MINUTE = 6;   // μL/min
+		BASIS_POINT = 7;             // bp, ‱ (permyriad)
+	}
+
+	Id id = 1;
+	Unit unit = 2;
+	int32 borderline_top = 3;
+	int32 borderline_bottom = 4;
+	string description = 5;
+	string name = 6;
+}
+
+message HealthCheckValue {
+	HealthCheckItem.Id id = 1;
+	int32 value = 2;
+}
+
+message HealthCheckData {
+	string user_id = 1;                 // 患者ID
+	int64 date = 2;                     // 検査日/予測日 (unix time)
+	int32 age = 3;                      // 年齢
+	repeated HealthCheckValue data = 4; // 健診データ
+}
+
+// 特に注意が必要な検査項目
+message HealthPayAttention {
+	HealthCheckItem priority_1 = 1;
+	HealthCheckItem priority_2 = 2;
+	HealthCheckItem priority_3 = 3;
+	HealthCheckItem priority_4 = 4;
+	HealthCheckItem priority_5 = 5;
+}
+
+message HealthCheckQuestion {
+	string name = 1;
+	string answer = 2;
+	string expected = 3;
+}
+
+// 特に気をつけるべき項目
+message HealthQuestionnaireAdvice {
+	string summary = 1;
+	HealthCheckQuestion priority_1 = 1;
+	HealthCheckQuestion priority_2 = 2;
+	HealthCheckQuestion priority_3 = 3;
+	HealthCheckQuestion priority_4 = 4;
+	HealthCheckQuestion priority_5 = 5;
+}
+
+message HealthPredictionRequest {
+}
+
+message HealthPredictionResponse {
+	HealthPayAttension pay_attension = 1;
+	HealthquestionnaireAdvice advice = 2;
+	HealthCheckData current_data = 3;
+	HealthCheckData next_data = 4;
+	HealthCheckData next_next_data = 5;
+}
+
+service HealthCheckService {
+	rpc PredictHealth (HealthPredictionRequest) returns (HealthPredictionResponse);
+}
+
