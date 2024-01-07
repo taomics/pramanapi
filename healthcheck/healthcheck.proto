@@ -5,6 +5,7 @@ package healthcheck;
 // healthcheck_items.json の定義です。
 message HealthCheckItem {
 	enum Id {
+		None = 0;
 		HEIGHT = 1;                                // 身長 (mm) 
 		WEIGHT = 2;                                // 体重 (g)
 		WAIST = 3;                                 // 腹囲 (mm)
@@ -53,40 +54,38 @@ message HealthCheckData {
 	repeated HealthCheckValue data = 4; // 健診データ
 }
 
-// 特に注意が必要な検査項目
-message HealthPayAttention {
-	HealthCheckItem priority_1 = 1;
-	HealthCheckItem priority_2 = 2;
-	HealthCheckItem priority_3 = 3;
-	HealthCheckItem priority_4 = 4;
-	HealthCheckItem priority_5 = 5;
+message HealthCheckQuestion {
+	string name = 1;      // 問診名
+	string content = 2;   // 問診内容
+	string answer = 3;    // あなたの回答
+	string expected = 4;  // 期待する回答
 }
 
-message HealthCheckQuestion {
-	string name = 1;
-	string answer = 2;
-	string expected = 3;
+message HealthCheckRanking {
+	HealthCheckItem.Id id = 1;
+	string note = 2;
+	int32 score = 3;
+	HealthCheckQuestion priority_1 = 4;  // 1位
+	HealthCheckQuestion priority_2 = 5;  // 2位
+	HealthCheckQuestion priority_3 = 6;  // 3位
+	HealthCheckQuestion priority_4 = 7;  // 4位
+	HealthCheckQuestion priority_5 = 8;  // 5位
 }
 
 // 特に気をつけるべき項目
-message HealthQuestionnaireAdvice {
-	string summary = 1;
-	HealthCheckQuestion priority_1 = 1;
-	HealthCheckQuestion priority_2 = 2;
-	HealthCheckQuestion priority_3 = 3;
-	HealthCheckQuestion priority_4 = 4;
-	HealthCheckQuestion priority_5 = 5;
+message HealthCheckQuestionnaireAdvice {
+	HealthCheckRanking summary = 1;
+	repeated HealthCheckRanking rankings = 2;
 }
 
 message HealthPredictionRequest {
 }
 
 message HealthPredictionResponse {
-	HealthPayAttension pay_attension = 1;
-	HealthquestionnaireAdvice advice = 2;
-	HealthCheckData current_data = 3;
-	HealthCheckData next_data = 4;
-	HealthCheckData next_next_data = 5;
+	HealthquestionnaireAdvice advice = 1;
+	HealthCheckData current_data = 2;     // 今年度の健診結果
+	HealthCheckData next_data = 3;        // 1年後の健診結果予測
+	HealthCheckData next_next_data = 4;   // 3年後の健診結果予測
 }
 
 service HealthCheckService {
