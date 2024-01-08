@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package healthcheck;
 
+option go_package = "github.com/taomics/pramanapi/healthcheck";
+
 // healthcheck_items.json の定義です。
 message HealthCheckItem {
 	enum Id {
@@ -25,6 +27,7 @@ message HealthCheckItem {
 	}
 
 	enum Unit {
+		Unknown = 0;
 		GRAM = 1;                    // g
 		MILLIMETER = 2;              // mm
 		MILLIMETER_OF_MERCURY = 3;   // mmHg
@@ -78,17 +81,17 @@ message HealthCheckQuestionnaireAdvice {
 	repeated HealthCheckRanking rankings = 2;
 }
 
-message HealthPredictionRequest {
+message HealthCheckPredictionRequest {
 }
 
-message HealthPredictionResponse {
-	HealthquestionnaireAdvice advice = 1;
+message HealthCheckPredictionResponse {
+	HealthCheckQuestionnaireAdvice advice = 1;
 	HealthCheckData current_data = 2;     // 今年度の健診結果
 	HealthCheckData next_data = 3;        // 1年後の健診結果予測
 	HealthCheckData next_next_data = 4;   // 3年後の健診結果予測
 }
 
 service HealthCheckService {
-	rpc PredictHealth (HealthPredictionRequest) returns (HealthPredictionResponse);
+	rpc PredictHealthCheck (HealthCheckPredictionRequest) returns (HealthCheckPredictionResponse);
 }
 
