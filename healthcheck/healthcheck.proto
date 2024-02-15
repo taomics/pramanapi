@@ -17,7 +17,7 @@ message HealthCheckItem {
 		ALANINE_TRANSAMINASE = 7;                  // 肝機能 ALT (U/L)
 		GAMMA_GLUTAMYL_TRANSPEPTIDASE = 8;         // γ-GTP (U/L)
 		CREATININE = 9;                            // クレアチニン (μg/dL)
-		ESTIMATED_GLOMERULAR_FILTRATION_RATE = 10; // eGFR, 推算糸球体濾過量 (μL/min)
+		ESTIMATED_GLOMERULAR_FILTRATION_RATE = 10; // eGFR, 推算糸球体濾過量 (μL/min/1.73m^2)
 		URIC_ACID = 11;                            // 尿酸 (μg/dL)
 		TRIGLYCERIDES = 12;                        // トリグリセリド, 中性脂肪 (μg/dL)
 		HIGH_DENSITY_LIPOPROTEIN = 13;             // HDL コレステロール (μg/dL)
@@ -33,7 +33,7 @@ message HealthCheckItem {
 		MILLIMETER_OF_MERCURY = 3;   // mmHg
 		ENZYME_UNIT_PER_LITER = 4;   // U/L
 		MICROGRAM_PER_DECILITER = 5; // μg/dL
-		MICROLITER_PER_MINUTE = 6;   // μL/min
+		MICROLITER_PER_MINUTE = 6;   // μL/min/1.73m^2
 		BASIS_POINT = 7;             // bp, ‱ (permyriad)
 	}
 
