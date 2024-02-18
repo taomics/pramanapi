@@ -1,4 +1,4 @@
-# Lifestyle Inventory
+# Lifestyle Journal
 
 日々の健康問診結果を記録します。
 

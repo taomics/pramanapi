@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package praman.lifestylejournal;
+package taomics.praman.lifestylejournal;
 
 option go_package = "github.com/taomics/pramanapi/lifestylejournal";
 
@@ -131,7 +131,7 @@ message MealQuantity {
 }
 
 message JournalData {
-  praman.common.Date date = 1;
+  taomics.praman.common.Date date = 1;
   TrackerStatus tracker_status = 2;
 
   // 睡眠

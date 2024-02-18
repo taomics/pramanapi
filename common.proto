@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package praman.common;
+package taomics.praman.common;
 
 option go_package = "github.com/taomics/pramanapi;common";
 
