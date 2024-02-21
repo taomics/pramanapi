@@ -6,6 +6,11 @@ option go_package = "github.com/taomics/pramanapi/lifestylejournal";
 
 import "common.proto";
 
+/*
+        一部英語の表現と日本語の表現が正確でないものがありますが、意図したものです。
+        明らかに意味が異なる場合は誤りですので訂正してください。
+*/
+
 enum TrackerStatus {
   NO_TRACKER = 0;      // トラッカーを使っていない
   FITBIT_RAW = 1;      // Fitbit のデータを利用している
@@ -16,10 +21,10 @@ enum TrackerStatus {
 
 enum FallAsleepDifficulty {
   FALL_ASLEEP_DIFFICULTY_UNKNOWN = 0;
-  IMMEDIATE = 1;         // すぐに就寝
-  WITHIN_30MINUTES = 2;  // 30分以内
-  WITHIN_ONEHOUR = 3;    // 1時間未満
-  MORE_THAN_ONEHOUR = 4; // 1時間以上
+  IMMEDIATE = 1;         // すぐ就寝
+  WITHIN_30_MINUTES = 2; // 30分以内
+  WITHIN_1_HOUR = 3;     // 1時間未満
+  OVER_1_HOUR = 4;       // 1時間以上
 }
 
 enum SleepQuality {
@@ -57,53 +62,56 @@ enum Emotion {
 }
 
 enum TalkTime {
-  TALK_TIME_NONE = 0;
-  LESS_THAN_30_MINUTES = 1; // 30分未満
-  LESS_THAN_1_HOUR = 2;     // 1時間未満
-  LESS_THAN_2_HOURS = 3;    // 2時間未満
-  GREATER_THAN_3_HOURS = 4; // 3時間以上
+  NO_TALK_TIME = 0;
+  WITHIN_30_MINUTES = 1; // 30分未満
+  AROUND_1_HOUR = 2;     // 約1時間
+  AROUND_2_HOURS = 3;    // 約2時間
+  OVER_3_HOURS = 4;      // 3時間以上
 }
 
+// 菓子・飲料
 enum ExtraEnergy {
-  EXTRA_ENERGY_NONE = 0;
-  LESS_THAN_100_KILOCALORIES = 1;    // 100キロカロリー
-  LESS_THAN_200_KILOCALORIES = 2;    // 200キロカロリー
-  LESS_THAN_300_KILOCALORIES = 3;    // 300キロカロリー
-  GREATER_THAN_400_KILOCALORIES = 4; // 400キロカロリー以上
+  NO_EXTRA_ENERGY = 0;
+  AROUND_100_KILOCALORIES = 1; // 100
+  AROUND_200_KILOCALORIES = 2; // 200
+  AROUND_300_KILOCALORIES = 3; // 300
+  OVER_400_KILOCALORIES = 4;   // 400以上
 }
 
 enum CaffeineQuantity {
-  CAFEINE_NONE = 0;
-  CUP_1 = 1; // 1杯
-  CUP_2 = 2; // 2杯
-  CUP_3 = 3; // 3から5杯
-  CUP_6 = 4; // 6杯以上
+  NO_CAFEINE = 0;
+  ONE_CUP = 1;       // 1杯
+  TWO_CUPS = 2;      // 2杯
+  WITHIN_5_CUPS = 3; // 3-5杯
+  OVER_5_CUPS = 4;   // 6杯以上
 }
 
-// アルコール量（ml） = 容量（ml） × アルコール度数（%） / 100
+// 純アルコール（g） = 容量（ml） × アルコール度数（%） / 100 x アルコール比重
+// 0.8
 //
-// アルコール度数が15%の日本酒の1合（約180ml）のアルコール量は 27 ml
+// アルコール度数が15%の日本酒の1合（約180ml）の場合のアルコール量は 21.6 g
 enum AlcoholQuantity {
-  ALCOHOL_NONE = 0;
-  GO_1 = 1; // 1合
-  GO_2 = 2; // 2合
-  GO_3 = 3; // 3合以上
+  NO_ALCOHOL = 0;
+  WITHIN_1_GO = 1; // 1合未満
+  WITHIN_2_GO = 2; // 1-2合
+  WITHIN_3_GO = 3; // 2-3合
+  OVER_3_GO = 4;   // 3合以上
 }
 
-enum TabacoQuantity {
-  TABACO_NONE = 0;
-  LESS_THAN_5 = 1;          // 5本未満
-  AROUND_HALF_BOX = 2;      // 半箱
-  AROUND_ONE_BOX = 3;       // 1箱
-  GREATER_THAN_ONE_BOX = 4; // それ以上
+enum TabaccoQuantity {
+  NO_TABACCO = 0;
+  UPTO_5 = 1;          // 5本未満
+  AROUND_HALF_BOX = 2; // 半箱
+  AROUND_ONE_BOX = 3;  // 1箱
+  OVER_ONE_BOX = 4;    // それ以上
 }
 
 enum SittingTime {
   SITTING_TIME_UNKNOWN = 0;
-  LESS_THAN_5_HOURS = 1;    // 5時間未満
-  LESS_THAN_7_HOURS = 2;    // 5から7時間
-  LESS_THAN_9_HOURS = 3;    // 9時間未満
-  GREATER_THAN_9_HOURS = 4; // 9時間以上
+  WITHIN_5_HOURS = 1; // 5時間以内
+  WITHIN_7_HOURS = 2; // 5-7時間
+  WITHIN_9_HOURS = 3; // 7-9時間
+  OVER_9_HOURS = 4;   // 9時間以上
 }
 
 enum StrengthTraining {
@@ -116,11 +124,11 @@ enum StrengthTraining {
 
 message MealQuantity {
   enum Score {
-    NONE = 0;
-    HALF = 1;               // 0.5
-    ONE = 2;                // 1
-    TWO = 3;                // 2
-    GREATER_THAN_THREE = 4; // 3 以上
+    ZERO = 0;       // 0
+    HALF = 1;       // 0.5
+    ONE = 2;        // 1
+    TWO = 3;        // 2
+    OVER_THREE = 4; // 3 以上
   }
 
   Score starch = 1; // 主食
@@ -154,7 +162,7 @@ message JournalData {
   int64 last_caffeine_time = 32;           // カフェイン最終摂取時刻
   CaffeineQuantity caffeine_quantity = 33; // カフェイン摂取量
   AlcoholQuantity alcohol_quantity = 34;   // 飲酒量
-  TabacoQuantity tabaco_quantity = 35;     // 喫煙量
+  TabaccoQuantity tabacco_quantity = 35;     // 喫煙量
 
   // 運動
   uint32 steps = 41;             // 歩数
