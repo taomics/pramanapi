@@ -61,12 +61,14 @@ enum Emotion {
   VERY_CALM = 5;       // すごく穏やか
 }
 
-enum TalkTime {
-  NO_TALK_TIME = 0;
-  WITHIN_30_MINUTES = 1; // 30分未満
-  AROUND_1_HOUR = 2;     // 約1時間
-  AROUND_2_HOURS = 3;    // 約2時間
-  OVER_3_HOURS = 4;      // 3時間以上
+message TalkTime {
+  enum Duration {
+    NO_TALK_TIME = 0;
+    WITHIN_30_MINUTES = 1; // 30分未満
+    AROUND_1_HOUR = 2;    // 約1時間
+    AROUND_2_HOURS = 3;   // 約2時間
+    OVER_3_HOURS = 4;     // 3時間以上
+  }
 }
 
 // 菓子・飲料
@@ -162,7 +164,7 @@ message JournalData {
   int64 last_caffeine_time = 32;           // カフェイン最終摂取時刻
   CaffeineQuantity caffeine_quantity = 33; // カフェイン摂取量
   AlcoholQuantity alcohol_quantity = 34;   // 飲酒量
-  TabaccoQuantity tabacco_quantity = 35;     // 喫煙量
+  TabaccoQuantity tabacco_quantity = 35;   // 喫煙量
 
   // 運動
   uint32 steps = 41;             // 歩数
@@ -171,10 +173,10 @@ message JournalData {
   repeated StrengthTraining strength_trainings = 44; // 筋トレ
 
   // ストレス
-  Mood daytime_mood = 51;       // 日中の気分
-  Emotion daytime_emotion = 52; // 日中のストレス
-  bool meditation = 53;         // メディテーション
-  TalkTime talk_time = 54;      // 1日の会話時間
+  Mood daytime_mood = 51;           // 日中の気分
+  Emotion daytime_emotion = 52;     // 日中のストレス
+  bool meditation = 53;             // メディテーション
+  TalkTime.Duration talk_time = 54; // 1日の会話時間
 }
 
 message LifestyleJournalKeepingRequest { JournalData data = 1; }
