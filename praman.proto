@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package taomics.praman.common;
+package taomics.praman;
 
-option go_package = "github.com/taomics/pramanapi;common";
+option go_package = "github.com/taomics/pramanapi";
 
 enum Sex {
   UNKNOWN = 0;
