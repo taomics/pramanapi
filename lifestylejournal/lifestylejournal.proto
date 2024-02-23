@@ -1,0 +1,211 @@
+syntax = "proto3";
+
+package taomics.praman.lifestylejournal;
+
+option go_package = "github.com/taomics/pramanapi/lifestylejournal";
+
+import "praman.proto";
+
+/*
+        一部英語の表現と日本語の表現が正確でないものがありますが、意図したものです。
+        明らかに意味が異なる場合は誤りですので訂正してください。
+*/
+
+enum TrackerStatus {
+  NO_TRACKER = 0;      // トラッカーを使っていない
+  FITBIT_RAW = 1;      // Fitbit のデータを利用している
+  FITBIT_MODIFIED = 2; // Fitbit のデータを一部変更して利用している
+  APPLE_WATCH_RAW = 3; // Apple Watch のデータを利用している
+  APPLE_WATCH_MODIFIED = 4; // Apple Watch のデータを一部変更して利用している
+}
+
+enum Sleepiness {
+  SLEEPINESS_UNKNOWN = 0;
+  NO_SLEEPINESS = 1;    // 眠気なし
+  SLIGHTLY_SLEEPY = 2;  // 少し眠い
+  QUITE_SLEEPY = 3;     // かなり眠い
+  EXTREMELY_SLEEPY = 4; // 激しく眠い
+}
+
+// 菓子・飲料
+enum ExtraEnergy {
+  EXTRA_ENERGY_UNKNOWN = 0;
+  NO_EXTRA_ENERGY = 1;         // 0
+  AROUND_100_KILOCALORIES = 2; // 100
+  AROUND_200_KILOCALORIES = 3; // 200
+  AROUND_300_KILOCALORIES = 4; // 300
+  OVER_400_KILOCALORIES = 5;   // 400以上
+}
+
+message JournalSleep {
+  enum FallAsleepDifficulty {
+    FALL_ASLEEP_DIFFICULTY_UNKNOWN = 0;
+    IMMEDIATE = 1;         // すぐ就寝
+    WITHIN_30_MINUTES = 2; // 30分以内
+    WITHIN_1_HOUR = 3;     // 1時間未満
+    OVER_1_HOUR = 4;       // 1時間以上
+  }
+
+  enum SleepQuality {
+    SLEEP_QUALITY_UNKNOWN = 0;
+    RESTLESS = 1;              // 非常に疲れが取れなかった
+    UNSETTLED = 2;             // 疲れが取れなかった
+    SLEEP_QUALITY_NEUTRAL = 3; // どちらとも言えない
+    RELAXED = 4;               // 疲れが取れた
+    RESTFUL = 5;               // 非常に疲れが取れた
+  }
+
+  int64 bed_time = 1;                              // 就寝時間
+  int64 wake_time = 2;                             // 起床時間
+  FallAsleepDifficulty fall_asleep_difficulty = 3; // 入眠困難感
+  uint32 frequent_awakenings = 4;                  // 中途覚醒
+  SleepQuality sleep_quality = 5;                  // 睡眠休養感
+}
+
+message JournalMeal {
+  enum Quantity {
+    ZERO = 0;       // 0
+    HALF = 1;       // 0.5
+    ONE = 2;        // 1
+    TWO = 3;        // 2
+    OVER_THREE = 4; // 3 以上
+  }
+
+  Quantity starch = 1; // 主食
+  Quantity main = 2;   // 主菜
+  Quantity side = 3;   // 副菜
+  bool dairy = 4;      // 乳製品
+  bool fruit = 5;      // 果物
+}
+
+message JournalIndulgence {
+  enum CaffeineQuantity {
+    NO_CAFEINE = 0;
+    ONE_CUP = 1;       // 1杯
+    TWO_CUPS = 2;      // 2杯
+    WITHIN_5_CUPS = 3; // 3-5杯
+    OVER_5_CUPS = 4;   // 6杯以上
+  }
+
+  // 純アルコール（g） = 容量（ml） × アルコール度数（%） / 100 x アルコール比重
+  // 0.8
+  //
+  // アルコール度数が15%の日本酒の1合（約180ml）の場合のアルコール量は 21.6 g
+  enum AlcoholQuantity {
+    NO_ALCOHOL = 0;
+    WITHIN_1_GO = 1; // 1合未満
+    WITHIN_2_GO = 2; // 1-2合
+    WITHIN_3_GO = 3; // 2-3合
+    OVER_3_GO = 4;   // 3合以上
+  }
+
+  enum TabaccoQuantity {
+    NO_TABACCO = 0;
+    UPTO_5 = 1;          // 5本未満
+    AROUND_HALF_BOX = 2; // 半箱
+    AROUND_ONE_BOX = 3;  // 1箱
+    OVER_ONE_BOX = 4;    // それ以上
+  }
+
+  int64 last_eating_time = 1;             // 食事最終摂取時刻
+  int64 last_caffeine_time = 2;           // カフェイン最終摂取時刻
+  CaffeineQuantity caffeine_quantity = 3; // カフェイン摂取量
+  AlcoholQuantity alcohol_quantity = 4;   // 飲酒量
+  TabaccoQuantity tabacco_quantity = 5;   // 喫煙量
+}
+
+message JournalActivity {
+  enum SittingTime {
+    SITTING_TIME_UNKNOWN = 0;
+    WITHIN_5_HOURS = 1; // 5時間以内
+    WITHIN_7_HOURS = 2; // 5-7時間
+    WITHIN_9_HOURS = 3; // 7-9時間
+    OVER_9_HOURS = 4;   // 9時間以上
+  }
+
+  enum StrengthTraining {
+    STRENGTH_TRAINING_UNKNOWN = 0;
+    BODY_WEIGHT = 1; // 自重トレーニング
+    MACHINE = 2;     // マシントレーニング
+    RESISTANCE = 3;  // ウェイトトレーニング
+    HOLISTIC = 4;    // ボディワーク
+  }
+
+  uint32 steps = 1;             // 歩数
+  SittingTime sitting_time = 2; // 座位時間
+  uint32 activity_minutes = 3;  // 有酸素運動(アクティブ)時間
+  repeated StrengthTraining strength_trainings = 4; // 筋トレ
+}
+
+message JournalStress {
+  enum Mood {
+    MOOD_UNKNOWN = 0;
+    VERY_NEGATIVE = 1; // すごくネガティブ
+    NEGATIVE = 2;      // ネガティブ
+    MOOD_NEUTRAL = 3;  // どちらでもない
+    POSITIVE = 4;      // ポジティブ
+    VERY_POSITIVE = 5; // すごくポジティブ
+  }
+
+  enum Emotion {
+    EMOTION_UNKNOWN = 0;
+    VERY_IRRITATED = 1;  // すごくイライラ
+    IRRITATED = 2;       // イライラ
+    EMOTION_NEUTRAL = 3; // どちらでもない
+    CALM = 4;            // 穏やか
+    VERY_CALM = 5;       // すごく穏やか
+  }
+
+  enum TalkTime {
+    TALK_TIME_UNKNOWN = 0;
+    NO_TALK_TIME = 1;      // なし
+    WITHIN_30_MINUTES = 2; // 30分未満
+    AROUND_1_HOUR = 3;     // 約1時間
+    AROUND_2_HOURS = 4;    // 約2時間
+    OVER_3_HOURS = 5;      // 3時間以上
+  }
+
+  Mood daytime_mood = 1;       // 日中の気分
+  Emotion daytime_emotion = 2; // 日中のストレス
+  bool meditation = 3;         // メディテーション
+  TalkTime talk_time = 4;      // 1日の会話時間
+}
+
+message JournalMain {
+  // 食事
+  JournalMeal breakfast = 1;    // 朝食の食事量
+  JournalMeal lunch = 2;        // 昼食の食事量
+  JournalMeal dinner = 3;       // 夕食の食事量
+  JournalMeal snacks = 4;       // 間食量
+  ExtraEnergy extra_energy = 5; // 菓子・飲料
+
+  // 嗜好
+  JournalIndulgence indulgence = 6;
+
+  // 運動
+  JournalActivity activity = 7;
+
+  // 日中の眠気。取得するタイミングが異なるので JournalSleep に含めない。
+  Sleepiness daytime_sleepiness = 8;
+
+  // ストレス
+  JournalStress stress = 9;
+}
+
+message LifestyleJournalKeepingRequest {
+  taomics.praman.Date date = 1;
+  TrackerStatus tracker_status = 2;
+
+  // 睡眠。起床時の問診
+  JournalSleep sleep = 3;
+
+  // 睡眠以外。就寝時の問診
+  JournalMain main = 4;
+}
+
+message LifestyleJournalKeepingResponse {}
+
+service LifestyleJournalService {
+  rpc KeepJournal(LifestyleJournalKeepingRequest)
+      returns (LifestyleJournalKeepingResponse);
+}

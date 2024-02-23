@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package taomics.praman;
+
+option go_package = "github.com/taomics/pramanapi";
+
+enum Sex {
+  UNKNOWN = 0;
+  MALE = 1;
+  FEMALE = 2;
+}
+
+message Date {
+  uint32 year = 1;
+  uint32 month = 2;
+  uint32 day = 3;
+}
