@@ -37,6 +37,21 @@ enum ExtraEnergy {
   OVER_400_KILOCALORIES = 5;   // 400以上
 }
 
+// 排便
+message BristolStoolScale {
+  enum Type {
+    BRISTOL_STOOL_SCALE_UNKNOWN = 0;
+    NO_STOOL = 1; // 便なし
+    TYPE_1 = 2;   // コロコロ便
+    TYPE_2 = 3;   // 硬い便
+    TYPE_3 = 4;   // やや硬い便
+    TYPE_4 = 5;   // 普通弁
+    TYPE_5 = 6;   // やや柔ない便
+    TYPE_6 = 7;   // 泥状便
+    TYPE_7 = 8;   // 水様便
+  }
+}
+
 message JournalSleep {
   enum FallAsleepDifficulty {
     FALL_ASLEEP_DIFFICULTY_UNKNOWN = 0;
@@ -107,7 +122,8 @@ message JournalIndulgence {
     OVER_ONE_BOX = 4;    // それ以上
   }
 
-  int64 last_eating_time = 1;             // 食事最終摂取時刻
+  int64 last_eating_time = 1 [ deprecated = true ]; // 食事最終摂取時刻
+
   int64 last_caffeine_time = 2;           // カフェイン最終摂取時刻
   CaffeineQuantity caffeine_quantity = 3; // カフェイン摂取量
   AlcoholQuantity alcohol_quantity = 4;   // 飲酒量
@@ -115,6 +131,14 @@ message JournalIndulgence {
 }
 
 message JournalActivity {
+  enum WalkingTime {
+    WLAKING_TIME_UNKNOWN = 0;
+    WITHIN_30_MINUTES = 1; // 30分未満
+    WITHIN_1_HOUR = 2;     // 1時間未満
+    WITHIN_2_HOURS = 3;    // 2時間未満
+    OVER_2_HOURS = 4;      // 2時間以上
+  }
+
   enum SittingTime {
     SITTING_TIME_UNKNOWN = 0;
     WITHIN_5_HOURS = 1; // 5時間以内
@@ -131,9 +155,17 @@ message JournalActivity {
     HOLISTIC = 4;    // ボディワーク
   }
 
-  uint32 steps = 1;             // 歩数
-  SittingTime sitting_time = 2; // 座位時間
-  uint32 activity_minutes = 3;  // 有酸素運動(アクティブ)時間
+  oneof walking_activity {
+    uint32 steps = 1;             // 歩数
+    WalkingTime walking_time = 5; // 歩行時間
+  }
+
+  oneof sitting_activity {
+    SittingTime sitting_time = 2; // 座位時間
+    uint32 sitting_minutes = 6;   // 座位時間（分）
+  }
+
+  uint32 activity_minutes = 3; // 有酸素運動(アクティブ)時間
   repeated StrengthTraining strength_trainings = 4; // 筋トレ
 }
 
@@ -167,7 +199,7 @@ message JournalStress {
 
   Mood daytime_mood = 1;       // 日中の気分
   Emotion daytime_emotion = 2; // 日中のストレス
-  bool meditation = 3;         // メディテーション
+  bool stress_coping = 3;      // ストレスコーピング
   TalkTime talk_time = 4;      // 1日の会話時間
 }
 
@@ -190,6 +222,10 @@ message JournalMain {
 
   // ストレス
   JournalStress stress = 9;
+
+  // 食事-追加
+  int64 last_eating_time = 10;                     // 食事最終摂取時刻
+  BristolStoolScale.Type bristol_stool_scale = 11; // 排便
 }
 
 message LifestyleJournalKeepingRequest {
