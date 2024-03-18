@@ -20,7 +20,8 @@ enum TrackerStatus {
 }
 
 enum Sleepiness {
-  SLEEPINESS_UNKNOWN = 0;
+  SLEEPINESS_UNKNOWN = 0; // INVALID VALUE
+
   NO_SLEEPINESS = 1;    // 眠気なし
   SLIGHTLY_SLEEPY = 2;  // 少し眠い
   QUITE_SLEEPY = 3;     // かなり眠い
@@ -29,7 +30,8 @@ enum Sleepiness {
 
 // 菓子・飲料
 enum ExtraEnergy {
-  EXTRA_ENERGY_UNKNOWN = 0;
+  EXTRA_ENERGY_UNKNOWN = 0; // INVALID VALUE
+
   NO_EXTRA_ENERGY = 1;         // 0
   AROUND_100_KILOCALORIES = 2; // 100
   AROUND_200_KILOCALORIES = 3; // 200
@@ -40,7 +42,8 @@ enum ExtraEnergy {
 // 排便
 message BristolStoolScale {
   enum Type {
-    BRISTOL_STOOL_SCALE_UNKNOWN = 0;
+    BRISTOL_STOOL_SCALE_UNKNOWN = 0; // INVALID VALUE
+
     NO_STOOL = 1; // 便なし
     TYPE_1 = 2;   // コロコロ便
     TYPE_2 = 3;   // 硬い便
@@ -54,7 +57,8 @@ message BristolStoolScale {
 
 message JournalSleep {
   enum FallAsleepDifficulty {
-    FALL_ASLEEP_DIFFICULTY_UNKNOWN = 0;
+    FALL_ASLEEP_DIFFICULTY_UNKNOWN = 0; // INVALID VALUE
+
     IMMEDIATE = 1;         // すぐ就寝
     WITHIN_30_MINUTES = 2; // 30分以内
     WITHIN_1_HOUR = 3;     // 1時間未満
@@ -62,7 +66,8 @@ message JournalSleep {
   }
 
   enum SleepQuality {
-    SLEEP_QUALITY_UNKNOWN = 0;
+    SLEEP_QUALITY_UNKNOWN = 0; // INVALID VALUE
+
     RESTLESS = 1;              // 非常に疲れが取れなかった
     UNSETTLED = 2;             // 疲れが取れなかった
     SLEEP_QUALITY_NEUTRAL = 3; // どちらとも言えない
@@ -132,7 +137,8 @@ message JournalIndulgence {
 
 message JournalActivity {
   enum WalkingTime {
-    WALKING_TIME_UNKNOWN = 0;
+    WALKING_TIME_UNKNOWN = 0; // INVALID VALUE
+
     WITHIN_30_MINUTES = 1; // 30分未満
     WITHIN_1_HOUR = 2;     // 1時間未満
     WITHIN_2_HOURS = 3;    // 2時間未満
@@ -140,7 +146,8 @@ message JournalActivity {
   }
 
   enum SittingTime {
-    SITTING_TIME_UNKNOWN = 0;
+    SITTING_TIME_UNKNOWN = 0; // INVALID VALUE
+
     WITHIN_5_HOURS = 1; // 5時間以内
     WITHIN_7_HOURS = 2; // 5-7時間
     WITHIN_9_HOURS = 3; // 7-9時間
@@ -148,7 +155,8 @@ message JournalActivity {
   }
 
   enum StrengthTraining {
-    STRENGTH_TRAINING_UNKNOWN = 0;
+    STRENGTH_TRAINING_UNKNOWN = 0; // INVALID VALUE
+
     BODY_WEIGHT = 1; // 自重トレーニング
     MACHINE = 2;     // マシントレーニング
     RESISTANCE = 3;  // ウェイトトレーニング
@@ -171,7 +179,8 @@ message JournalActivity {
 
 message JournalStress {
   enum Mood {
-    MOOD_UNKNOWN = 0;
+    MOOD_UNKNOWN = 0; // INVALID VALUE
+
     VERY_NEGATIVE = 1; // すごくネガティブ
     NEGATIVE = 2;      // ネガティブ
     MOOD_NEUTRAL = 3;  // どちらでもない
@@ -180,7 +189,8 @@ message JournalStress {
   }
 
   enum Emotion {
-    EMOTION_UNKNOWN = 0;
+    EMOTION_UNKNOWN = 0; // INVALID VALUE
+
     VERY_IRRITATED = 1;  // すごくイライラ
     IRRITATED = 2;       // イライラ
     EMOTION_NEUTRAL = 3; // どちらでもない
@@ -189,7 +199,8 @@ message JournalStress {
   }
 
   enum TalkTime {
-    TALK_TIME_UNKNOWN = 0;
+    TALK_TIME_UNKNOWN = 0; // INVALID VALUE
+
     NO_TALK_TIME = 1;      // なし
     WITHIN_30_MINUTES = 2; // 30分未満
     AROUND_1_HOUR = 3;     // 約1時間
