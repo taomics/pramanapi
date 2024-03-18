@@ -1,0 +1,157 @@
+syntax = "proto3";
+
+package taomics.praman.accounts;
+
+option go_package = "github.com/taomics/pramanapi/accounts";
+
+import "praman.proto";
+
+message User {
+  // read only
+  string id = 1;
+
+  // required
+  string display_name = 2;
+  taomics.praman.Sex sex = 3;
+  taomics.praman.Date birthdate = 4;
+  float weight = 5;
+  float height = 6;
+
+  // optional
+  string organization_id = 7;
+}
+
+message AccountsUserFetchResponse { User user = 1; }
+
+message AccountsUserCreationRequest { User user = 1; }
+
+message AccountsUserCreationResponse { string user_id = 1; }
+
+message AccountsUserUpdateRequest { User user = 1; }
+
+message AccountsUserUpdateResponse { string user_id = 1; }
+
+message Advisor {
+  string id = 1; // read only
+  string display_name = 2;
+  taomics.praman.Image icon = 3;
+}
+
+message AccountsAdvisorFetchResponse { Advisor advisor = 1; }
+
+message AccountsAdvisorUpdateRequest { Advisor advisor = 1; }
+
+message AccountsAdvisorUpdateResponse { string advisor_id = 1; }
+
+enum PermissionScope {
+  UNKNOWN = 0;
+  HEALTH_CHECK_RESULTS = 1;      // 健康診断結果
+  HEALTH_CHECK_PREDICTIONS = 2;  // 健康診断予測
+  LIFESTYLE_JOURNAL_SUMMARY = 3; // 問診サマリー
+  HEALTH_ADVICE = 4;             // 保健指導アドバイス
+}
+
+message Authorization {
+  string id = 1;
+  repeated PermissionScope scopes = 2;
+  int64 expire_time = 3;
+  string approver_user_id = 4;
+  Advisor requester = 5;
+  bool granted = 6;
+}
+
+message AccountsAuthorizationCreationRequest {
+  repeated PermissionScope scopes = 1;
+}
+
+message AccountsAuthorizationCreationResponse {
+  Authorization authorization =
+      1; // creation response does not includes requester
+  taomics.praman.Image qr_code = 2; // qr_code includes only authorization id
+}
+
+message AccountsAuthorizationRetrievalRequest { string authorization_id = 1; }
+
+message AccountsAuthorizationRetrievalResponse {
+  Authorization authorization = 1;
+}
+
+message AccountsAuthorizationGrantRequest {
+  string authorization_id = 1;
+  bool grant = 2;
+}
+
+message AccountsAuthorizationGrantResponse { Authorization authorization = 1; }
+
+// AccountsService
+//
+// Common Errors:
+//   - INTERNAL (13): Server is something wrong.
+//   - UNAUTHENTICATED (16): Authorization header is something wrong.
+service AccountsService {
+  // Gets the current user profile using authorization header.
+  //
+  // Errors:
+  //   - PERMISSION_DENIED (7): The requester does not have a user permission.
+  rpc CurrentUser(taomics.praman.Empty) returns (AccountsUserFetchResponse);
+
+  // Register as user.
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): There is an invalid argument
+  rpc RegisterUser(AccountsUserCreationRequest)
+      returns (AccountsUserCreationResponse);
+
+  // Updates current user profile.
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): There is an invalid argument
+  //   - PERMISSION_DENIED (7): The requester does not have a user permission.
+  rpc UpdateUser(AccountsUserUpdateRequest)
+      returns (AccountsUserUpdateResponse);
+
+  // Gets the current advisor profile using authorization header.
+  //
+  // Errors:
+  //   - PERMISSION_DENIED (7): The requester does not have a advisor
+  //   permission.
+  rpc CurrentAdvisor(taomics.praman.Empty)
+      returns (AccountsAdvisorFetchResponse);
+
+  // Updates current advisor profile.
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): There is an invalid argument
+  //   - PERMISSION_DENIED (7): The requester does not have a user permission.
+  rpc UpdateAdvisor(AccountsAdvisorUpdateRequest)
+      returns (AccountsAdvisorUpdateResponse);
+
+  // Create an authorization request.
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): There is an invalid argument
+  //   - PERMISSION_DENIED (7): The requester does not have a advisor
+  //   permission.
+  rpc CreateAuthorization(AccountsAuthorizationCreationRequest)
+      returns (AccountsAuthorizationCreationResponse);
+
+  // Gets an authorization request.
+  //
+  // Errors:
+  //   - NOT_FOUND (5): The specified authorization id does not exist.
+  //   - PERMISSION_DENIED (7): The requester does not have a user permission.
+  rpc RetrieveAuthorization(AccountsAuthorizationRetrievalRequest)
+      returns (AccountsAuthorizationRetrievalResponse);
+
+  // Grant an authorization request.
+  //
+  // Errors:
+  //   - NOT_FOUND (5): The specified authorization id does not exist.
+  //   - PERMISSION_DENIED (7):
+  //       - The requester does not have a user permission.
+  //       - The specified authorization id is for the requester.
+  //   - FAILED_PRECONDITION (9): The specified authorization id was already
+  //   granted.
+  rpc GrantAuthorization(AccountsAuthorizationGrantRequest)
+      returns (AccountsAuthorizationGrantResponse);
+}
