@@ -132,7 +132,7 @@ message JournalIndulgence {
 
 message JournalActivity {
   enum WalkingTime {
-    WLAKING_TIME_UNKNOWN = 0;
+    WALKING_TIME_UNKNOWN = 0;
     WITHIN_30_MINUTES = 1; // 30分未満
     WITHIN_1_HOUR = 2;     // 1時間未満
     WITHIN_2_HOURS = 3;    // 2時間未満
