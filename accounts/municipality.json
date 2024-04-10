@@ -3,11 +3,11 @@
     {
       "code": 10006,
       "name": "北海道",
-      "children": [
+      "districts": [
         {
           "code": 11002,
           "name": "札幌市",
-          "children": [
+          "districts": [
             {
               "code": 11011,
               "name": "中央区"
@@ -791,7 +791,7 @@
     {
       "code": 20001,
       "name": "青森県",
-      "children": [
+      "districts": [
         {
           "code": 22012,
           "name": "青森市"
@@ -957,7 +957,7 @@
     {
       "code": 30007,
       "name": "岩手県",
-      "children": [
+      "districts": [
         {
           "code": 32018,
           "name": "盛岡市"
@@ -1095,11 +1095,11 @@
     {
       "code": 40002,
       "name": "宮城県",
-      "children": [
+      "districts": [
         {
           "code": 41009,
           "name": "仙台市",
-          "children": [
+          "districts": [
             {
               "code": 41017,
               "name": "青葉区"
@@ -1263,7 +1263,7 @@
     {
       "code": 50008,
       "name": "秋田県",
-      "children": [
+      "districts": [
         {
           "code": 52019,
           "name": "秋田市"
@@ -1369,7 +1369,7 @@
     {
       "code": 60003,
       "name": "山形県",
-      "children": [
+      "districts": [
         {
           "code": 62014,
           "name": "山形市"
@@ -1515,7 +1515,7 @@
     {
       "code": 70009,
       "name": "福島県",
-      "children": [
+      "districts": [
         {
           "code": 72010,
           "name": "福島市"
@@ -1757,7 +1757,7 @@
     {
       "code": 80004,
       "name": "茨城県",
-      "children": [
+      "districts": [
         {
           "code": 82015,
           "name": "水戸市"
@@ -1939,7 +1939,7 @@
     {
       "code": 90000,
       "name": "栃木県",
-      "children": [
+      "districts": [
         {
           "code": 92011,
           "name": "宇都宮市"
@@ -2045,7 +2045,7 @@
     {
       "code": 100005,
       "name": "群馬県",
-      "children": [
+      "districts": [
         {
           "code": 102016,
           "name": "前橋市"
@@ -2191,11 +2191,11 @@
     {
       "code": 110001,
       "name": "埼玉県",
-      "children": [
+      "districts": [
         {
           "code": 111007,
           "name": "さいたま市",
-          "children": [
+          "districts": [
             {
               "code": 111015,
               "name": "西区"
@@ -2491,11 +2491,11 @@
     {
       "code": 120006,
       "name": "千葉県",
-      "children": [
+      "districts": [
         {
           "code": 121002,
           "name": "千葉市",
-          "children": [
+          "districts": [
             {
               "code": 121011,
               "name": "中央区"
@@ -2739,7 +2739,7 @@
     {
       "code": 130001,
       "name": "東京都",
-      "children": [
+      "districts": [
         {
           "code": 131016,
           "name": "千代田区"
@@ -2993,11 +2993,11 @@
     {
       "code": 140007,
       "name": "神奈川県",
-      "children": [
+      "districts": [
         {
           "code": 141003,
           "name": "横浜市",
-          "children": [
+          "districts": [
             {
               "code": 141011,
               "name": "鶴見区"
@@ -3075,7 +3075,7 @@
         {
           "code": 141305,
           "name": "川崎市",
-          "children": [
+          "districts": [
             {
               "code": 141313,
               "name": "川崎区"
@@ -3109,7 +3109,7 @@
         {
           "code": 141500,
           "name": "相模原市",
-          "children": [
+          "districts": [
             {
               "code": 141518,
               "name": "緑区"
@@ -3249,11 +3249,11 @@
     {
       "code": 150002,
       "name": "新潟県",
-      "children": [
+      "districts": [
         {
           "code": 151009,
           "name": "新潟市",
-          "children": [
+          "districts": [
             {
               "code": 151017,
               "name": "北区"
@@ -3409,7 +3409,7 @@
     {
       "code": 160008,
       "name": "富山県",
-      "children": [
+      "districts": [
         {
           "code": 162019,
           "name": "富山市"
@@ -3475,7 +3475,7 @@
     {
       "code": 170003,
       "name": "石川県",
-      "children": [
+      "districts": [
         {
           "code": 172014,
           "name": "金沢市"
@@ -3557,7 +3557,7 @@
     {
       "code": 180009,
       "name": "福井県",
-      "children": [
+      "districts": [
         {
           "code": 182010,
           "name": "福井市"
@@ -3631,7 +3631,7 @@
     {
       "code": 190004,
       "name": "山梨県",
-      "children": [
+      "districts": [
         {
           "code": 192015,
           "name": "甲府市"
@@ -3745,7 +3745,7 @@
     {
       "code": 200000,
       "name": "長野県",
-      "children": [
+      "districts": [
         {
           "code": 202011,
           "name": "長野市"
@@ -4059,7 +4059,7 @@
     {
       "code": 210005,
       "name": "岐阜県",
-      "children": [
+      "districts": [
         {
           "code": 212016,
           "name": "岐阜市"
@@ -4233,11 +4233,11 @@
     {
       "code": 220001,
       "name": "静岡県",
-      "children": [
+      "districts": [
         {
           "code": 221007,
           "name": "静岡市",
-          "children": [
+          "districts": [
             {
               "code": 221015,
               "name": "葵区"
@@ -4255,7 +4255,7 @@
         {
           "code": 221309,
           "name": "浜松市",
-          "children": [
+          "districts": [
             {
               "code": 221384,
               "name": "中央区"
@@ -4407,11 +4407,11 @@
     {
       "code": 230006,
       "name": "愛知県",
-      "children": [
+      "districts": [
         {
           "code": 231002,
           "name": "名古屋市",
-          "children": [
+          "districts": [
             {
               "code": 231011,
               "name": "千種区"
@@ -4695,7 +4695,7 @@
     {
       "code": 240001,
       "name": "三重県",
-      "children": [
+      "districts": [
         {
           "code": 242012,
           "name": "津市"
@@ -4817,7 +4817,7 @@
     {
       "code": 250007,
       "name": "滋賀県",
-      "children": [
+      "districts": [
         {
           "code": 252018,
           "name": "大津市"
@@ -4899,11 +4899,11 @@
     {
       "code": 260002,
       "name": "京都府",
-      "children": [
+      "districts": [
         {
           "code": 261009,
           "name": "京都市",
-          "children": [
+          "districts": [
             {
               "code": 261017,
               "name": "北区"
@@ -5055,11 +5055,11 @@
     {
       "code": 270008,
       "name": "大阪府",
-      "children": [
+      "districts": [
         {
           "code": 271004,
           "name": "大阪市",
-          "children": [
+          "districts": [
             {
               "code": 271021,
               "name": "都島区"
@@ -5161,7 +5161,7 @@
         {
           "code": 271403,
           "name": "堺市",
-          "children": [
+          "districts": [
             {
               "code": 271411,
               "name": "堺区"
@@ -5361,11 +5361,11 @@
     {
       "code": 280003,
       "name": "兵庫県",
-      "children": [
+      "districts": [
         {
           "code": 281000,
           "name": "神戸市",
-          "children": [
+          "districts": [
             {
               "code": 281018,
               "name": "東灘区"
@@ -5569,7 +5569,7 @@
     {
       "code": 290009,
       "name": "奈良県",
-      "children": [
+      "districts": [
         {
           "code": 292010,
           "name": "奈良市"
@@ -5731,7 +5731,7 @@
     {
       "code": 300004,
       "name": "和歌山県",
-      "children": [
+      "districts": [
         {
           "code": 302015,
           "name": "和歌山市"
@@ -5857,7 +5857,7 @@
     {
       "code": 310000,
       "name": "鳥取県",
-      "children": [
+      "districts": [
         {
           "code": 312011,
           "name": "鳥取市"
@@ -5939,7 +5939,7 @@
     {
       "code": 320005,
       "name": "島根県",
-      "children": [
+      "districts": [
         {
           "code": 322016,
           "name": "松江市"
@@ -6021,11 +6021,11 @@
     {
       "code": 330001,
       "name": "岡山県",
-      "children": [
+      "districts": [
         {
           "code": 331007,
           "name": "岡山市",
-          "children": [
+          "districts": [
             {
               "code": 331015,
               "name": "北区"
@@ -6153,11 +6153,11 @@
     {
       "code": 340006,
       "name": "広島県",
-      "children": [
+      "districts": [
         {
           "code": 341002,
           "name": "広島市",
-          "children": [
+          "districts": [
             {
               "code": 341011,
               "name": "中区"
@@ -6285,7 +6285,7 @@
     {
       "code": 350001,
       "name": "山口県",
-      "children": [
+      "districts": [
         {
           "code": 352012,
           "name": "下関市"
@@ -6367,7 +6367,7 @@
     {
       "code": 360007,
       "name": "徳島県",
-      "children": [
+      "districts": [
         {
           "code": 362018,
           "name": "徳島市"
@@ -6469,7 +6469,7 @@
     {
       "code": 370002,
       "name": "香川県",
-      "children": [
+      "districts": [
         {
           "code": 372013,
           "name": "高松市"
@@ -6543,7 +6543,7 @@
     {
       "code": 380008,
       "name": "愛媛県",
-      "children": [
+      "districts": [
         {
           "code": 382019,
           "name": "松山市"
@@ -6629,7 +6629,7 @@
     {
       "code": 390003,
       "name": "高知県",
-      "children": [
+      "districts": [
         {
           "code": 392014,
           "name": "高知市"
@@ -6771,11 +6771,11 @@
     {
       "code": 400009,
       "name": "福岡県",
-      "children": [
+      "districts": [
         {
           "code": 401005,
           "name": "北九州市",
-          "children": [
+          "districts": [
             {
               "code": 401013,
               "name": "門司区"
@@ -6809,7 +6809,7 @@
         {
           "code": 401307,
           "name": "福岡市",
-          "children": [
+          "districts": [
             {
               "code": 401315,
               "name": "東区"
@@ -7077,7 +7077,7 @@
     {
       "code": 410004,
       "name": "佐賀県",
-      "children": [
+      "districts": [
         {
           "code": 412015,
           "name": "佐賀市"
@@ -7163,7 +7163,7 @@
     {
       "code": 420000,
       "name": "長崎県",
-      "children": [
+      "districts": [
         {
           "code": 422011,
           "name": "長崎市"
@@ -7253,11 +7253,11 @@
     {
       "code": 430005,
       "name": "熊本県",
-      "children": [
+      "districts": [
         {
           "code": 431001,
           "name": "熊本市",
-          "children": [
+          "districts": [
             {
               "code": 431010,
               "name": "中央区"
@@ -7461,7 +7461,7 @@
     {
       "code": 440001,
       "name": "大分県",
-      "children": [
+      "districts": [
         {
           "code": 442011,
           "name": "大分市"
@@ -7539,7 +7539,7 @@
     {
       "code": 450006,
       "name": "宮崎県",
-      "children": [
+      "districts": [
         {
           "code": 452017,
           "name": "宮崎市"
@@ -7649,7 +7649,7 @@
     {
       "code": 460001,
       "name": "鹿児島県",
-      "children": [
+      "districts": [
         {
           "code": 462012,
           "name": "鹿児島市"
@@ -7827,7 +7827,7 @@
     {
       "code": 470007,
       "name": "沖縄県",
-      "children": [
+      "districts": [
         {
           "code": 472018,
           "name": "那覇市"
