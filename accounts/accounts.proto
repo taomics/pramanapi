@@ -16,6 +16,7 @@ message User {
   taomics.praman.Date birthdate = 4;
   float weight = 5;
   float height = 6;
+  uint32 municipality_code = 8;
 
   // optional
   string organization_id = 7;
