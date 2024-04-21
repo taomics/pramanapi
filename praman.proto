@@ -5,9 +5,17 @@ package taomics.praman;
 option go_package = "github.com/taomics/pramanapi";
 
 enum Sex {
-  UNKNOWN = 0;
+  SEX_UNKNOWN = 0;
   MALE = 1;
   FEMALE = 2;
+}
+
+enum Unit {
+  UNIT_UNKNOWN = 0;
+  CENTIMETER = 1;  // cm
+  KILOGRAM = 2;    // kg
+  KILOCALORIE = 3; // kcal
+  KILOJOULE = 4;   // kJ
 }
 
 message Date {
@@ -25,6 +33,19 @@ message Image {
 
   Format format = 1;
   bytes data = 2;
+}
+
+message Range {
+  float min = 1;
+  float max = 2;
+  Type type = 3;
+
+  enum Type {
+    CLOSED = 0;   // [min,max]; min ≦ x ≦ max, default
+    OPEN = 1;     // (min,max); min < x < max
+    MIN_OPEN = 2; // (min,max]; min < x ≦ max
+    MAX_OPEN = 3; // [min,max); min ≦ x < max
+  }
 }
 
 message Empty {}

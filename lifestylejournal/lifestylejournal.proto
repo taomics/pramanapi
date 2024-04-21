@@ -241,7 +241,147 @@ message LifestyleJournalKeepingRequest {
 
 message LifestyleJournalKeepingResponse {}
 
+/* EvaluateChallengeScores */
+
+message ChallengeScore {
+  taomics.praman.Date date = 1; // 評価した日付
+  string name = 2;
+  string url = 3; // 健康課題スコアのヘルプページのURL
+  float score = 4;
+  float score_change = 5; // 前回の評価とのスコアの変化
+  Level level = 6;
+  repeated LabelGroup label_groups = 7;
+
+  // スコアカードをレンダリングするための詳細情報
+  // スコアカードは互いに排他的であり、1つのみセットされます。
+  oneof scorecard {
+    SimpleScorecard simple_scorecard = 8;
+    BalanceScorecard balance_scorecard = 9;
+    DifferentialScorecard differential_scorecard = 10;
+    MealBalanceScorecard meal_balance_scorecard = 11;
+  }
+
+  repeated ChallengeScore sub_challenge_scores = 12; // サブスコア
+
+  enum Level {
+    LEVEL_UNKNOWN = 0;
+    NO_LEVEL = 1;
+    LEVEL_1 = 2;
+    LEVEL_2 = 3;
+    LEVEL_3 = 4;
+    LEVEL_4 = 5;
+    LEVEL_5 = 6;
+  }
+
+  enum LabelGroupName {
+    LABEL_GROUP_NAME_UNKNOWN = 0;
+    VariationReason = 1;   // 変動理由
+    ImprovementMethod = 2; // 改善方法
+    BonusFactor = 3;       // 加点要因
+    DeductionFactor = 4;   // 減点要因
+  }
+
+  message LabelGroup {
+    LabelGroupName name = 1;
+    repeated Label labels = 2;
+  }
+
+  message Label {
+    string name = 1;
+    string url = 2;
+  }
+
+  // シンプルスコアカード
+  message SimpleScorecard {
+    // true: ポジティブスコアカード
+    // false: ネガティブスコアカード
+    bool positive = 1;
+    taomics.praman.Range range = 2;
+    taomics.praman.Range level1_range = 3;
+    taomics.praman.Range level2_range = 4;
+    taomics.praman.Range level3_range = 5;
+    taomics.praman.Range level4_range = 6;
+    taomics.praman.Range level5_range = 7;
+
+    string leftside_label = 8;
+    string rightside_label = 9;
+  }
+
+  // バランススコアカードはレベルを扱わず以下で表現します。
+  //
+  // - ニュートラル
+  // - レフトサイド
+  // - ライトサイド
+  // - レッドゾーン
+  //
+  // レッドゾーンはレベル５相当です。
+  message BalanceScorecard {
+    taomics.praman.Range range = 1;
+    taomics.praman.Range neutral_range = 2;
+    taomics.praman.Range leftside_range = 3;
+    taomics.praman.Range rightside_range = 4;
+    taomics.praman.Range leftredzone_range = 5;
+    taomics.praman.Range rightredzone_range = 6;
+
+    string newtral_label = 7;
+    string leftside_label = 8;
+    string rightside_label = 9;
+  }
+
+  // ディファレンシャルスコアカードは比較可能な2つのパラメータとその差分を表します。
+  message DifferentialScorecard {
+    message Parameter {
+      string name = 1;
+      float value = 2;
+    }
+
+    Parameter parameter1 = 1;
+    Parameter parameter2 = 2;
+    Parameter diff = 3;
+    taomics.praman.Unit unit = 4;
+  }
+
+  // 食事バランススコアカードは食事バランスを表現する専用のスコアカードです。
+  message MealBalanceScorecard {
+    message MealValue {
+      float value = 1;
+      taomics.praman.Range range = 2;
+      taomics.praman.Range optimal_range = 3;
+    }
+
+    MealValue starch = 1; // 主食
+    MealValue main = 2;   // 主菜
+    MealValue side = 3;   // 副菜
+    MealValue dairy = 4;  // 乳製品
+    MealValue fruit = 5;  // 果物
+  }
+}
+
+message LifestyleJournalEvaluateChallengeScoresRequest {}
+
+message LifestyleJournalEvaluateChallengeScoresResponse {
+  repeated ChallengeScore challenge_scores = 1;
+}
+
+// LifestyleJournalService
+//
+// Common Errors:
+//   - INTERNAL (13): Server is something wrong.
+//   - UNAUTHENTICATED (16): Authorization header is something wrong.
 service LifestyleJournalService {
+  // Keep a journal.
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): There is an invalid argument
   rpc KeepJournal(LifestyleJournalKeepingRequest)
       returns (LifestyleJournalKeepingResponse);
+
+  // Evaluate the challenge scores based on the latest journal records.
+  // It requires a minimum number of journal records to perform an evaluation.
+  //
+  // Errors:
+  //   - FAILED_PRECONDITION (9): Not enough journal records to evaluate the
+  //   challenge scores.
+  rpc EvaluateChallengeScores(LifestyleJournalEvaluateChallengeScoresRequest)
+      returns (LifestyleJournalEvaluateChallengeScoresResponse);
 }
