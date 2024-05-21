@@ -305,6 +305,8 @@ message ChallengeScore {
 
     string leftside_label = 8;
     string rightside_label = 9;
+
+    int32 interval = 10;
   }
 
   // バランススコアカードはレベルを扱わず以下で表現します。
