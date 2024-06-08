@@ -1,0 +1,270 @@
+syntax = "proto3";
+
+package taomics.praman.recordlog;
+
+option go_package = "github.com/taomics/pramanapi/recordlog";
+
+import "praman.proto";
+
+message LogRequest { taomics.praman.Timezone timezone = 1; }
+
+// 特定の期間の統計情報を表します。
+// 「朝食回数」などの件数を表すものは count と total のみ有効です。
+message Statistics {
+  int32 count = 1;   // データ数
+  float minimum = 2; // 最小値
+  float maximum = 3; // 最大値
+  float median = 4;  // 中央値
+  float total = 5;   // 合計値
+  float average = 6; // 平均値 = 合計値 / データ数
+}
+
+message BodyMetricsLog {
+  message Log {
+    taomics.praman.Date date = 1;
+    float weight = 2;   // 体重 (kg)
+    float body_fat = 3; // 体脂肪率 (%)
+  }
+
+  message StatisticsSummary {
+    Statistics weight = 1;   // 体重統計
+    Statistics body_fat = 2; // 体脂肪率統計
+  }
+
+  repeated Log weekly = 1;                  // 1週間分のログ
+  StatisticsSummary monthly_statistics = 2; // 月間統計
+}
+
+message SleepLog {
+  message Log {
+    taomics.praman.Date date = 1;
+    int64 bed_time = 2;               // 就寝時間
+    int64 wake_time = 3;              // 起床時間)
+    int32 frequent_awakenings = 4;    // 中途覚醒 (回数)
+    int32 fall_asleep_difficulty = 5; // 入眠するまでにかかった時間 (1-4)
+    int32 sleep_quality = 6;          // 睡眠休養感 (1-5)
+    int32 daytime_sleepiness = 7;     // 日中の眠気 (1-5). ただし 0 はデータなし
+  }
+
+  message StatisticsSummary {
+    taomics.praman.Date since = 1;
+    taomics.praman.Date until = 2;
+    Statistics sleep_duration_minutes = 3; // 睡眠時間統計
+    Statistics bed_time_minutes = 4;       // 就寝時間統計
+    Statistics wake_time_minutes = 5;      // 起床時間統計
+    Statistics frequent_awakenings = 6;    // 中途覚醒統計
+    Statistics fall_asleep_difficulty_minutes =
+        7; // 入眠するまでにかかった時間統計
+    Statistics sleep_quality = 8;      // 睡眠休養感統計
+    Statistics daytime_sleepiness = 9; // 日中の眠気統計
+  }
+
+  repeated Log weekly = 1;                  // 1週間分のログ
+  StatisticsSummary monthly_statistics = 2; // 月間統計
+}
+
+message MealLog {
+  message Log {
+    message PFCBalance {
+      float protein = 1;      // プロテインパーセント (%)
+      float fat = 2;          // 脂質パーセント (%)
+      float carbohydrate = 3; // 炭水化物パーセント (%)
+    }
+
+    message Meal {
+      float starch = 1;
+      float side = 2;
+      float main = 3;
+      float dairy = 4;
+      float fruit = 5;
+    }
+
+    taomics.praman.Date date = 1;
+    float intake_kcal = 2;      // 推定消費カロリー (kcal)
+    PFCBalance pfc_balance = 3; // PFCバランス
+    Meal breakfast = 4;         // 朝食
+    Meal lunch = 5;             // 昼食
+    Meal dinner = 6;            // 夕食
+    Meal snacks = 7;            // 間食
+    int32 extra_energy = 8;     // 菓子類カロリーの合計 (kcal)
+    int64 last_eating_time = 9; // 最終食事摂取時間
+  }
+
+  message StatisticsSummary {
+    message PFCBalance {
+      Statistics protein = 1;      // プロテインパーセント (%)
+      Statistics fat = 2;          // 脂質パーセント (%)
+      Statistics carbohydrate = 3; // 炭水化物パーセント (%)
+    }
+    taomics.praman.Date since = 1;
+    taomics.praman.Date until = 2;
+    Statistics intake_kcal = 3;  // 推定消費カロリー統計
+    PFCBalance pfc_balance = 4;  // PFCバランス統計
+    Statistics extra_energy = 5; // 菓子類カロリーの合計統計
+    Statistics last_eating_time_minutes = 6; // 最終食事摂取時間統計
+    Statistics starch_sv = 7;                // 主食の合計統計
+    Statistics side_sv = 8;                  // 副菜の合計統計
+    Statistics main_sv = 9;                  // 主菜の合計統計
+    Statistics dairy_sv = 10;                // 乳製品の合計統計
+    Statistics fruit_sv = 11;                // 果物の合計統計
+    Statistics breakfast_count = 12;         // 朝食回数統計
+    Statistics lunch_count = 13;             // 昼食回数統計
+    Statistics dinner_count = 14;            // 夕食回数統計
+    Statistics no_starch_count = 15;         // 主食欠食回数統計
+    Statistics no_main_count = 16;           // 主菜欠食回数統計
+    Statistics no_side_count = 17;           // 副菜欠食回数統計
+  }
+
+  repeated Log weekly = 1;                  // 1週間分のログ
+  StatisticsSummary monthly_statistics = 2; // 月間統計
+}
+
+message AlcoholCaffeineLog {
+  message Log {
+    taomics.praman.Date date = 1;
+    int32 alcohol_quantity = 2;            // 飲酒の摂取量 (合) (1-4)
+    int32 caffeine_quantity = 3;           // カフェインの摂取量 (杯)
+    int32 caffeine_abstinence_minutes = 4; // カフェイン絶時間 (分)
+  }
+
+  message StatisticsSummary {
+    taomics.praman.Date since = 1;
+    taomics.praman.Date until = 2;
+    Statistics alcohol_count = 4;     // 飲酒回数統計
+    Statistics alcohol_quantity = 5;  // 飲酒の摂取量統計
+    Statistics caffeine_count = 6;    // カフェイン摂取回数統計
+    Statistics caffeine_quantity = 7; // カフェインの摂取量統計
+    Statistics caffeine_abstinence_minutes = 8; // カフェイン絶時間統計
+  }
+
+  repeated Log weekly = 1;                  // 1週間分のログ
+  StatisticsSummary monthly_statistics = 2; // 月間統計
+}
+
+message TabaccoLog {
+  message Log {
+    taomics.praman.Date date = 1;
+    int32 tabacco_quantity = 2; // 喫煙本数 (本)
+    bool had_cigarette = 3;     // 紙巻タバコ: あり=true, なし=false
+    bool had_heated = 4;        // 加熱式タバコ: あり=true, なし=false
+    bool had_electronic = 5;    // 電子式タバコ: あり=true, なし=false
+  }
+
+  message StatisticsSummary {
+    taomics.praman.Date since = 1;
+    taomics.praman.Date until = 2;
+    Statistics tabacco_quantity = 3; // 喫煙本数統計
+    Statistics tabacco_count = 4;    // 喫煙回数統計
+    Statistics cigarette_count = 5;  // 紙巻タバコ回数統計
+    Statistics heated_count = 6;     // 加熱式タバコ回数統計
+    Statistics electronic_count = 7; // 電子式タバコ回数統計
+  }
+
+  repeated Log weekly = 1;                  // 1週間分のログ
+  StatisticsSummary monthly_statistics = 2; // 月間統計
+}
+
+message ActivityLog {
+  message Log {
+    taomics.praman.Date date = 1;
+    int32 steps = 2;                // 歩数 (歩)
+    int32 activity_minutes = 3;     // 有酸素運動時間 (分)
+    int32 sitting_time_minutes = 4; // 座位時間 (分)
+    bool had_strength_training = 5; // 筋トレ: あり=true, なし=false
+    bool had_body_weight = 6; // 自重トレーニング: あり=true, なし=false
+    bool had_machine = 7; // マシントレーニング: あり=true, なし=false
+    bool had_resistance = 8; // ウェイトトレーニング: あり=true, なし=false
+    bool had_holistic = 9; // ボディワーク: あり=true, なし=false
+  }
+
+  message StatisticsSummary {
+    taomics.praman.Date since = 1;
+    taomics.praman.Date until = 2;
+    Statistics steps = 3;                   // 歩数統計
+    Statistics activity_minutes = 4;        // 有酸素運動時間統計
+    Statistics sitting_time_minutes = 5;    // 座位時間統計
+    Statistics strength_training_count = 6; // 筋トレ回数統計
+    Statistics body_weight_count = 7; // 自重トレーニング回数統計
+    Statistics machine_count = 8;     // マシントレーニング回数統計
+    Statistics resistance_count = 9; // ウェイトトレーニング回数統計
+    Statistics holistic_count = 10; // ボディワーク回数統計
+  }
+
+  repeated Log weekly = 1;                  // 1週間分のログ
+  StatisticsSummary monthly_statistics = 2; // 月間統計
+}
+
+message StressLog {
+  message Log {
+    taomics.praman.Date date = 1;
+    int32 daytime_mood = 2;      // 日中の気分 (1-5)
+    int32 daytime_emotion = 3;   // 日中のストレス (1-5)
+    int32 talk_time_minutes = 4; // 会話時間 (分)
+    bool had_stress_coping = 5; // ストレスコーピング: あり=true, なし=false
+  }
+
+  message StatisticsSummary {
+    taomics.praman.Date since = 1;
+    taomics.praman.Date until = 2;
+    Statistics daytime_mood = 3;        // 日中の気分統計
+    Statistics daytime_emotion = 4;     // 日中のストレス統計
+    Statistics talk_time_minutes = 5;   // 会話時間統計
+    Statistics stress_coping_count = 6; // ストレスコーピング回数統計
+  }
+
+  repeated Log weekly = 1;                      // 1週間分のログ
+  StatisticsSummary monthly_statistics = 2;     // 月間統計
+  StatisticsSummary two_month_statistics = 3;   // 2ヶ月間統計
+  StatisticsSummary three_month_statistics = 4; // 3ヶ月間統計
+}
+
+message StoolLog {
+  message Log {
+    taomics.praman.Date date = 1;
+    bool had_stool = 2;            // 排便: あり=true, なし=false
+    float bristol_stool_scale = 3; // 便の硬さ (1-7)
+  }
+
+  message StatisticsSummary {
+    taomics.praman.Date since = 1;
+    taomics.praman.Date until = 2;
+    Statistics stool_count = 3;         // 排便回数統計
+    Statistics bristol_stool_scale = 4; // 便の硬さ統計
+  }
+
+  repeated Log weekly = 1;                  // 1週間分のログ
+  StatisticsSummary monthly_statistics = 2; // 月間統計
+}
+
+// RecordLogService
+//
+// Common Errors:
+//   - INTERNAL (13): Server is something wrong.
+//   - UNAUTHENTICATED (16): Authorization header is something wrong.
+//   - NOT_FOUND (5): There is no log for the current user.
+//   - PERMISSION_DENIED (7): The requester does not have a user permission.
+service RecordLogService {
+  // Gets the current user's log of body metrics.
+  rpc GetBodyMetricsLog(LogRequest) returns (BodyMetricsLog);
+
+  // Gets the current user's log of sleep journal.
+  rpc GetSleepLog(LogRequest) returns (SleepLog);
+
+  // Gets the current user's log of meal journal.
+  rpc GetMealLog(LogRequest) returns (MealLog);
+
+  // Gets the current user's log of alcohol and caffeine journal.
+  rpc GetAlcoholCaffeineLog(LogRequest) returns (AlcoholCaffeineLog);
+
+  // Gets the current user's log of tabacco journal.
+  rpc GetTabaccoLog(LogRequest) returns (TabaccoLog);
+
+  // Gets the current user's log of activity journal.
+  rpc GetActivityLog(LogRequest) returns (ActivityLog);
+
+  // Gets the current user's log of stress journal.
+  rpc GetStressLog(LogRequest) returns (StressLog);
+
+  // Gets the current user's log of stool journal.
+  rpc GetStoolLog(LogRequest) returns (StoolLog);
+}
