@@ -40,12 +40,12 @@ message BodyMetricsLog {
 message SleepLog {
   message Log {
     taomics.praman.Date date = 1;
-    int64 bed_time = 2;               // 就寝時間
-    int64 wake_time = 3;              // 起床時間)
-    int32 frequent_awakenings = 4;    // 中途覚醒 (回数)
+    int64 bed_time = 2;            // 就寝時間
+    int64 wake_time = 3;           // 起床時間)
+    int32 frequent_awakenings = 4; // 中途覚醒 (回数)
     int32 fall_asleep_difficulty = 5; // 入眠するまでにかかった時間 (1-4)
     int32 sleep_quality = 6;          // 睡眠休養感 (1-5)
-    int32 daytime_sleepiness = 7;     // 日中の眠気 (1-5). ただし 0 はデータなし
+    int32 daytime_sleepiness = 7; // 日中の眠気 (1-5). ただし 0 はデータなし
   }
 
   message StatisticsSummary {
@@ -124,9 +124,13 @@ message MealLog {
 message AlcoholCaffeineLog {
   message Log {
     taomics.praman.Date date = 1;
-    int32 alcohol_quantity = 2;            // 飲酒の摂取量 (合) (1-4)
-    int32 caffeine_quantity = 3;           // カフェインの摂取量 (杯)
-    int32 caffeine_abstinence_minutes = 4; // カフェイン絶時間 (分)。ただし、カフェイン摂取量が 0 の場合は 0。
+    int32 alcohol_quantity = 2;  // 飲酒の摂取量 (合) (1-4)
+    int32 caffeine_quantity = 3; // カフェインの摂取量 (杯)
+
+    // カフェイン絶時間: bed_time - last_caffeine_time
+    // ただし、カフェイン摂取量が 0 の場合は 0
+    int64 last_caffeine_time = 4; // 最終カフェイン摂取時間
+    int64 bed_time = 5;           // 就寝時間
   }
 
   message StatisticsSummary {
@@ -162,8 +166,10 @@ message TabaccoLog {
     Statistics electronic_count = 7; // 電子式タバコ回数統計
   }
 
-  repeated Log weekly = 1;                  // 1週間分のログ
-  StatisticsSummary monthly_statistics = 2; // 月間統計
+  repeated Log weekly = 1;                      // 1週間分のログ
+  StatisticsSummary monthly_statistics = 2;     // 月間統計
+  StatisticsSummary two_month_statistics = 3;   // 2ヶ月間統計
+  StatisticsSummary three_month_statistics = 4; // 3ヶ月間統計
 }
 
 message ActivityLog {
@@ -214,10 +220,8 @@ message StressLog {
     Statistics stress_coping_count = 6; // ストレスコーピング回数統計
   }
 
-  repeated Log weekly = 1;                      // 1週間分のログ
-  StatisticsSummary monthly_statistics = 2;     // 月間統計
-  StatisticsSummary two_month_statistics = 3;   // 2ヶ月間統計
-  StatisticsSummary three_month_statistics = 4; // 3ヶ月間統計
+  repeated Log weekly = 1;                  // 1週間分のログ
+  StatisticsSummary monthly_statistics = 2; // 月間統計
 }
 
 message StoolLog {
