@@ -27,8 +27,10 @@ message BodyMetricsLog {
   }
 
   message StatisticsSummary {
-    Statistics weight = 1;   // 体重統計
-    Statistics body_fat = 2; // 体脂肪率統計
+    taomics.praman.Date since = 1;
+    taomics.praman.Date until = 2;
+    Statistics weight = 3;   // 体重統計
+    Statistics body_fat = 4; // 体脂肪率統計
   }
 
   repeated Log weekly = 1;                  // 1週間分のログ
@@ -124,7 +126,7 @@ message AlcoholCaffeineLog {
     taomics.praman.Date date = 1;
     int32 alcohol_quantity = 2;            // 飲酒の摂取量 (合) (1-4)
     int32 caffeine_quantity = 3;           // カフェインの摂取量 (杯)
-    int32 caffeine_abstinence_minutes = 4; // カフェイン絶時間 (分)
+    int32 caffeine_abstinence_minutes = 4; // カフェイン絶時間 (分)。ただし、カフェイン摂取量が 0 の場合は 0。
   }
 
   message StatisticsSummary {
