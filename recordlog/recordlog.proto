@@ -82,7 +82,7 @@ message MealLog {
     }
 
     taomics.praman.Date date = 1;
-    float intake_kcal = 2;      // 推定消費カロリー (kcal)
+    float intake_kcal = 2;      // 推定摂取カロリー (kcal)
     PFCBalance pfc_balance = 3; // PFCバランス
     Meal breakfast = 4;         // 朝食
     Meal lunch = 5;             // 昼食
