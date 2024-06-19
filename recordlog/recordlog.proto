@@ -141,6 +141,7 @@ message AlcoholCaffeineLog {
     Statistics caffeine_count = 6;    // カフェイン摂取回数統計
     Statistics caffeine_quantity = 7; // カフェインの摂取量統計
     Statistics caffeine_abstinence_minutes = 8; // カフェイン絶時間統計
+    Statistics last_caffeine_time_minutes = 9; // 最終カフェイン摂取時間統計
   }
 
   repeated Log weekly = 1;                  // 1週間分のログ
