@@ -35,6 +35,8 @@ enum ExtraEnergy {
   AROUND_200_KILOCALORIES = 3; // 200
   AROUND_300_KILOCALORIES = 4; // 300
   OVER_400_KILOCALORIES = 5;   // 400以上
+  AROUND_400_KILOCALORIES = 6; // 400
+  OVER_600_KILOCALORIES = 7;   // 600以上
 }
 
 // 排便
@@ -122,12 +124,24 @@ message JournalIndulgence {
     OVER_ONE_BOX = 4;    // それ以上
   }
 
+  enum TabaccoType {
+    TABACCO_TYPE_NONE = 0;
+    CIGARETTES = 1; // 紙巻タバコ
+    HEATED = 2; // 加熱式タバコ（アイコス、プルーム、グローなど）
+    ELECTRONIC = 3;            // 電子タバコ（VAPEなど）
+    CIGARETTES_HEATED = 4;     // 紙巻タバコと加熱式タバコを併用
+    CIGARETTES_ELECTRONIC = 5; // 紙巻タバコと電子タバコを併用
+    HEATED_ELECTRONIC = 6;     // 加熱式タバコと電子タバコを併用
+    ALL = 7;                   // 紙巻・加熱式・電子タバコを併用
+  }
+
   int64 last_eating_time = 1 [ deprecated = true ]; // 食事最終摂取時刻
 
   int64 last_caffeine_time = 2;           // カフェイン最終摂取時刻
   CaffeineQuantity caffeine_quantity = 3; // カフェイン摂取量
   AlcoholQuantity alcohol_quantity = 4;   // 飲酒量
   TabaccoQuantity tabacco_quantity = 5;   // 喫煙量
+  TabaccoType tabacco_type = 6;           // 喫煙種類
 }
 
 message JournalActivity {
@@ -226,16 +240,25 @@ message JournalMain {
   // 食事-追加
   int64 last_eating_time = 10;                     // 食事最終摂取時刻
   BristolStoolScale.Type bristol_stool_scale = 11; // 排便
+  string notes = 12;                               // 健康メモ
+}
+
+message JournalBodyMetrics {
+  float weight = 1;   // 体重
+  float body_fat = 2; // 体脂肪率
 }
 
 message LifestyleJournalKeepingRequest {
   taomics.praman.Date date = 1;
   TrackerStatus tracker_status = 2;
 
-  // 睡眠。起床時の問診
+  // 睡眠。起床時の問診で記録します。
   JournalSleep sleep = 3;
 
-  // 睡眠以外。就寝時の問診
+  // 身体状況。起床時の問診で計測済みの場合のみ記録します。
+  JournalBodyMetrics body_metrics = 5;
+
+  // 睡眠と身体状況以外。就寝時の問診で記録します。
   JournalMain main = 4;
 }
 
