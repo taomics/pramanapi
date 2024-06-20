@@ -10,13 +10,14 @@ message LogRequest { taomics.praman.Timezone timezone = 1; }
 
 // 特定の期間の統計情報を表します。
 // 「朝食回数」などの件数を表すものは count と total のみ有効です。
+// 「就寝時間」などの時間を表すものは total は無効です。
 message Statistics {
   int32 count = 1;   // データ数
   float minimum = 2; // 最小値
   float maximum = 3; // 最大値
   float median = 4;  // 中央値
   float total = 5;   // 合計値
-  float average = 6; // 平均値 = 合計値 / データ数
+  float average = 6; // 平均値
 }
 
 message BodyMetricsLog {
