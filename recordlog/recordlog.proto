@@ -131,6 +131,7 @@ message AlcoholCaffeineLog {
     // ただし、カフェイン摂取量が 0 の場合は 0
     int64 last_caffeine_time = 4; // 最終カフェイン摂取時間
     int64 bed_time = 5;           // 就寝時間
+    int32 caffeine_abstinence_minutes = 6; // カフェイン絶時間 (分)
   }
 
   message StatisticsSummary {
