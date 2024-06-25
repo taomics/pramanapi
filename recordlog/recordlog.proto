@@ -127,12 +127,11 @@ message AlcoholCaffeineLog {
     taomics.praman.Date date = 1;
     int32 alcohol_quantity = 2;  // 飲酒の摂取量 (合) (1-4)
     int32 caffeine_quantity = 3; // カフェインの摂取量 (杯)
-
-    // カフェイン絶時間: bed_time - last_caffeine_time
-    // ただし、カフェイン摂取量が 0 の場合は 0
     int64 last_caffeine_time = 4; // 最終カフェイン摂取時間
-    int64 bed_time = 5;           // 就寝時間
-    int32 caffeine_abstinence_minutes = 6; // カフェイン絶時間 (分)
+
+    // カフェイン絶時間 (分)
+    // 翌日の朝の問診が必要になるため値を返せない場合があります。
+    int32 caffeine_abstinence_minutes = 6;
   }
 
   message StatisticsSummary {
@@ -231,7 +230,7 @@ message StoolLog {
   message Log {
     taomics.praman.Date date = 1;
     bool had_stool = 2;            // 排便: あり=true, なし=false
-    float bristol_stool_scale = 3; // 便の硬さ (1-7)
+    int32 bristol_stool_scale = 3; // 便の硬さ (1-7)
   }
 
   message StatisticsSummary {
