@@ -18,6 +18,12 @@ enum Unit {
   KILOJOULE = 4;   // kJ
 }
 
+enum Timezone {
+	ASIA_TOKYO = 0; // default value
+}
+
+message Empty {}
+
 message Date {
   uint32 year = 1;
   uint32 month = 2;
@@ -47,5 +53,3 @@ message Range {
     MAX_OPEN = 3; // [min,max); min ≦ x < max
   }
 }
-
-message Empty {}
