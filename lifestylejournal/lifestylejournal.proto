@@ -5,6 +5,7 @@ package taomics.praman.lifestylejournal;
 option go_package = "github.com/taomics/pramanapi/lifestylejournal";
 
 import "praman.proto";
+import "recordlog_type.proto";
 
 /*
         一部英語の表現と日本語の表現が正確でないものがありますが、意図したものです。
@@ -271,9 +272,12 @@ message ChallengeScore {
   string name = 2;
   string url = 3; // 健康課題スコアのヘルプページのURL
   float score = 4;
-  float score_change = 5; // 前回の評価とのスコアの変化
+  string score_text = 13; // スコアテキスト
   Level level = 6;
   repeated LabelGroup label_groups = 7;
+  map<string, string> info = 14;                     // 情報テーブル
+  BehaviorOnTap behavior_on_tap = 15;                // タップ時の挙動
+  taomics.praman.recordlog.LogType related_log = 16; // 関連ログ
 
   // スコアカードをレンダリングするための詳細情報
   // スコアカードは互いに排他的であり、1つのみセットされます。
@@ -285,6 +289,8 @@ message ChallengeScore {
   }
 
   repeated ChallengeScore sub_challenge_scores = 12; // サブスコア
+
+  float score_change = 5 [ deprecated = true ]; // 前回の評価とのスコアの変化
 
   enum Level {
     LEVEL_UNKNOWN = 0;
@@ -312,6 +318,12 @@ message ChallengeScore {
   message Label {
     string name = 1;
     string url = 2;
+  }
+
+  enum BehaviorOnTap {
+    BEHAVIOR_ON_TAP_NONE = 0;
+    OPEN_SUBSCORE = 1;
+    OPEN_RELATED_LOG = 2;
   }
 
   // シンプルスコアカード

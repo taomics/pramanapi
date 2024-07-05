@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package taomics.praman.recordlog;
+
+option go_package = "github.com/taomics/pramanapi/recordlog";
+
+enum LogType {
+  LOG_TYPE_UNKNOWN = 0;
+  BodyMetrics = 1;
+  Sleep = 2;
+  Meal = 3;
+  AlcoholCaffeine = 4;
+  Tabacco = 5;
+  Activity = 6;
+  Stress = 7;
+  Stool = 8;
+}
+

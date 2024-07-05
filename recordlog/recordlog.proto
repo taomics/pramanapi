@@ -125,8 +125,8 @@ message MealLog {
 message AlcoholCaffeineLog {
   message Log {
     taomics.praman.Date date = 1;
-    int32 alcohol_quantity = 2;  // 飲酒の摂取量 (合) (1-4)
-    int32 caffeine_quantity = 3; // カフェインの摂取量 (杯)
+    int32 alcohol_quantity = 2;   // 飲酒の摂取量 (合) (1-4)
+    int32 caffeine_quantity = 3;  // カフェインの摂取量 (杯)
     int64 last_caffeine_time = 4; // 最終カフェイン摂取時間
 
     // カフェイン絶時間 (分)
