@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package taomics.praman.externaldata;
+
+option go_package = "github.com/taomics/pramanapi/externaldata";
+
+import "praman.proto";
+
+message ExternalData {
+  string source = 1;
+  int64 since = 2;
+  int64 until = 3;
+  bytes data = 4;
+}
+
+message StoreExternalDataRequest {
+  // The external data to store.
+  ExternalData external_data = 1;
+}
+
+message StoreExternalDataResponse {}
+
+// ExternalDataservice
+//
+// Common Errors:
+//   - INTERNAL (13): Server is something wrong.
+//   - UNAUTHENTICATED (16): Authorization header is something wrong.
+service ExternalDataService {
+  // Store external data.
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): There is an invalid argument
+  rpc StoreExternalData(StoreExternalDataRequest) returns (StoreExternalDataResponse);
+}
+
