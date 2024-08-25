@@ -173,7 +173,6 @@ message TabaccoLog {
   }
 
   repeated Log weekly = 1;                      // 1週間分のログ
-  StatisticsSummary weekly_statistics = 5;      // 週間統計
   StatisticsSummary monthly_statistics = 2;     // 月間統計
   StatisticsSummary two_month_statistics = 3;   // 2ヶ月間統計
   StatisticsSummary three_month_statistics = 4; // 3ヶ月間統計
