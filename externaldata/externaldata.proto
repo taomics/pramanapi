@@ -13,6 +13,11 @@ message ExternalData {
   bytes data = 4;
 }
 
+message ExternalDataSummary {
+  string source = 1;
+  int64 latest = 2;
+}
+
 message StoreExternalDataRequest {
   // The external data to store.
   ExternalData external_data = 1;
@@ -20,9 +25,19 @@ message StoreExternalDataRequest {
 
 message StoreExternalDataResponse {}
 
+message ExternalDataSummaryRequest {
+  // sources specified the summaries of external data. If sources is empty, return all summaries.
+  repeated string sources = 1;
+}
+
+message ExternalDataSummaryResponse {
+  repeated ExternalDataSummary summaries = 1;
+}
+
 // ExternalDataservice
 //
 // Common Errors:
+//   - PERMISSION_DENIED (7): User has no permission to access the resource.
 //   - INTERNAL (13): Server is something wrong.
 //   - UNAUTHENTICATED (16): Authorization header is something wrong.
 service ExternalDataService {
@@ -31,5 +46,10 @@ service ExternalDataService {
   // Errors:
   //   - INVALID_ARGUMENT (3): There is an invalid argument
   rpc StoreExternalData(StoreExternalDataRequest) returns (StoreExternalDataResponse);
+
+  // Get external data summary.
+  // Errors:
+  //   - NOT_FOUND (5): Specified source is not found.
+  rpc GetExternalDataSummary(ExternalDataSummaryRequest) returns (ExternalDataSummaryResponse);
 }
 
