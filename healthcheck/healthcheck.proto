@@ -25,6 +25,8 @@ message HealthCheckParameter {
   // また、基準値のリスクレベルはパラメータによって範囲と種類が異なります。例えば下限と上限に2つの「注意が必要」レベルの範囲があるものがある一方で、「特に注意が必要」レベルの範囲がないものがあります。
   repeated ReferenceRange reference_ranges = 10;
 
+  uint32 fraction_digits = 11; // 有効な小数点以下の桁数
+
   enum HealthRisk {
     HEALTH_RISK_UNKNOWN = 0;
     HEALTH_RISK_LOW = 1;    // 現状維持
