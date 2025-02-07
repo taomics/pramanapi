@@ -85,6 +85,9 @@ message UploadHealthCheckResultResponse {}
 //   - PERMISSION_DENIED (7): The requester does not have a permission.
 service HealthCheckService {
   // Predict health check result in the future.
+  //
+  // Errors:
+  //   - NOT_FOUND (5): The health check data is not found.
   rpc PredictHealthCheck(HealthCheckPredictionRequest)
       returns (HealthCheckPredictionResponse);
 
@@ -92,6 +95,8 @@ service HealthCheckService {
   //
   // Errors:
   //   - INVALID_ARGUMENT (3): The upload data is invalid.
+  //   - FAILED_PRECONDITION (9): The upload data is not acceptable.
+  //   - ALREADY_EXISTS (6): The health check data is already exists.
   rpc UploadHealthCheckResult(UploadHealthCheckResultRequest)
       returns (UploadHealthCheckResultResponse);
 }
