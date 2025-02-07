@@ -1,97 +1,102 @@
 syntax = "proto3";
 
-package healthcheck;
+package taomics.praman.healthcheck;
 
 option go_package = "github.com/taomics/pramanapi/healthcheck";
 
-// healthcheck_items.json の定義です。
-message HealthCheckItem {
-	enum Id {
-		None = 0;
-		HEIGHT = 1;                                // 身長 (mm) 
-		WEIGHT = 2;                                // 体重 (g)
-		WAIST = 3;                                 // 腹囲 (mm)
-		BLOOD_PRESSURE_SYSTOLIC = 4;               // 収縮期血圧 (mmHg)
-		BLOOD_PRESSURE_DIASTOLIC = 5;              // 拡張期血圧 (mmHg)
-		ASPARTATE_TRANSAMINASE = 6;                // 肝機能 AST (U/L)
-		ALANINE_TRANSAMINASE = 7;                  // 肝機能 ALT (U/L)
-		GAMMA_GLUTAMYL_TRANSPEPTIDASE = 8;         // γ-GTP (U/L)
-		CREATININE = 9;                            // クレアチニン (μg/dL)
-		ESTIMATED_GLOMERULAR_FILTRATION_RATE = 10; // eGFR, 推算糸球体濾過量 (μL/min/1.73m^2)
-		URIC_ACID = 11;                            // 尿酸 (μg/dL)
-		TRIGLYCERIDES = 12;                        // トリグリセリド, 中性脂肪 (μg/dL)
-		HIGH_DENSITY_LIPOPROTEIN = 13;             // HDL コレステロール (μg/dL)
-		LOW_DENSITY_LIPOPROTEIN = 14;              // LDL コレステロール (μg/dL)
-		BLOOD_SUGAR_LEVEL = 15;                    // 空腹時血糖値 (μg/dL)
-		HEMOGLOBIN_A1C = 16;                       // HbA1c (bp) 
-	}
+import "praman.proto";
 
-	enum Unit {
-		Unknown = 0;
-		GRAM = 1;                    // g
-		MILLIMETER = 2;              // mm
-		MILLIMETER_OF_MERCURY = 3;   // mmHg
-		ENZYME_UNIT_PER_LITER = 4;   // U/L
-		MICROGRAM_PER_DECILITER = 5; // μg/dL
-		MICROLITER_PER_MINUTE = 6;   // μL/min/1.73m^2
-		BASIS_POINT = 7;             // bp, ‱ (permyriad)
-	}
+message HealthCheckParameter {
+  string name = 1;        // パラメータ名
+  string unit = 2;        // パラメータの単位
+  string description = 3; // パラメータの説明
 
-	Id id = 1;
-	Unit unit = 2;
-	int32 borderline_top = 3;
-	int32 borderline_bottom = 4;
-	string description = 5;
-	string name = 6;
+  float current_value = 4;          // 最新の健診結果
+  float predicted_value_1year = 5;  // 1年後の健診結果
+  float predicted_value_3years = 6; // 3年後の健診結果
+
+  HealthRisk risk = 7;     // パラメータのリスクレベル
+  string caution_note = 8; // パラメータの注意事項
+  repeated Recommendation recommendations = 9; // 優先して改善すべき問診項目
+
+  // 基準値
+  //
+  // 基準値は基本的には一律に定まっていますが一部ユーザー毎に異なるためレスポンスに含めます。
+  // また、基準値のリスクレベルはパラメータによって範囲と種類が異なります。例えば下限と上限に2つの「注意が必要」レベルの範囲があるものがある一方で、「特に注意が必要」レベルの範囲がないものがあります。
+  repeated ReferenceRange reference_ranges = 10;
+
+  uint32 fraction_digits = 11; // 有効な小数点以下の桁数
+
+  enum HealthRisk {
+    HEALTH_RISK_UNKNOWN = 0;
+    HEALTH_RISK_LOW = 1;    // 現状維持
+    HEALTH_RISK_MIDDLE = 2; // 注意が必要
+    HEALTH_RISK_HIGH = 3;   // 特に注意が必要
+  }
+
+  message Recommendation {
+    string subject = 1; // 問診名
+    string content = 2; // 問診へのアドバイス
+  }
+
+  message ReferenceRange {
+    HealthRisk risk = 1;            // リスクレベル
+    taomics.praman.Range range = 2; // 範囲
+  }
 }
 
-message HealthCheckValue {
-	HealthCheckItem.Id id = 1;
-	int32 value = 2;
-}
+message HealthCheckUploadData {
+  string issuer = 1;                  // 医療機関名
+  string issuer_code = 2;             // 処方箋発行医療機関コード
+  taomics.praman.Date issue_date = 3; // QRコード発行日
+  repeated Result results = 4;        // 健康診断結果
 
-message HealthCheckData {
-	string user_id = 1;                 // 患者ID
-	int64 date = 2;                     // 検査日/予測日 (unix time)
-	int32 age = 3;                      // 年齢
-	repeated HealthCheckValue data = 4; // 健診データ
-}
-
-message HealthCheckQuestion {
-	string name = 1;      // 問診名
-	string content = 2;   // 問診内容
-	string answer = 3;    // あなたの回答
-	string expected = 4;  // 期待する回答
-}
-
-message HealthCheckRanking {
-	HealthCheckItem.Id id = 1;
-	string note = 2;
-	int32 score = 3;
-	HealthCheckQuestion priority_1 = 4;  // 1位
-	HealthCheckQuestion priority_2 = 5;  // 2位
-	HealthCheckQuestion priority_3 = 6;  // 3位
-	HealthCheckQuestion priority_4 = 7;  // 4位
-	HealthCheckQuestion priority_5 = 8;  // 5位
-}
-
-// 特に気をつけるべき項目
-message HealthCheckQuestionnaireAdvice {
-	HealthCheckRanking summary = 1;
-	repeated HealthCheckRanking rankings = 2;
+  message Result {
+    taomics.praman.Date date = 1; // 健康診断受信日
+    string ver = 2;               // 健康診断データバージョン
+    string data = 3;              // 健康診断データ
+  }
 }
 
 message HealthCheckPredictionRequest {
+  // 健診の日付。何も指定がなければ最新の結果を返します。
+  taomics.praman.Date date = 1;
 }
 
 message HealthCheckPredictionResponse {
-	HealthCheckQuestionnaireAdvice advice = 1;
-	HealthCheckData current_data = 2;     // 今年度の健診結果
-	HealthCheckData next_data = 3;        // 1年後の健診結果予測
-	HealthCheckData next_next_data = 4;   // 3年後の健診結果予測
+  // 健診日
+  taomics.praman.Date date = 1;
+
+  // 健診結果と予測
+  // 最新の健診結果と1年後、3年後の健診結果を健康診断項目毎に返します。
+  // 1年後の健診結果と3年後の値は、最新の健診結果から予測された値です。
+  repeated HealthCheckParameter parameters = 2;
 }
 
+message UploadHealthCheckResultRequest { HealthCheckUploadData data = 1; }
+
+message UploadHealthCheckResultResponse {}
+
+// HealthCheckService
+//
+// Common Errors:
+//   - INTERNAL (13): Server is something wrong.
+//   - UNAUTHENTICATED (16): Authorization header is something wrong.
+//   - PERMISSION_DENIED (7): The requester does not have a permission.
 service HealthCheckService {
-	rpc PredictHealthCheck (HealthCheckPredictionRequest) returns (HealthCheckPredictionResponse);
-}
+  // Predict health check result in the future.
+  //
+  // Errors:
+  //   - NOT_FOUND (5): The health check data is not found.
+  rpc PredictHealthCheck(HealthCheckPredictionRequest)
+      returns (HealthCheckPredictionResponse);
 
+  // Upload health check result.
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): The upload data is invalid.
+  //   - FAILED_PRECONDITION (9): The upload data is not acceptable.
+  //   - ALREADY_EXISTS (6): The health check data is already exists.
+  rpc UploadHealthCheckResult(UploadHealthCheckResultRequest)
+      returns (UploadHealthCheckResultResponse);
+}

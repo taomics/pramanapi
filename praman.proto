@@ -19,7 +19,7 @@ enum Unit {
 }
 
 enum Timezone {
-	ASIA_TOKYO = 0; // default value
+  ASIA_TOKYO = 0; // default value
 }
 
 message Empty {}
