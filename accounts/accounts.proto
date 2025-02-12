@@ -10,7 +10,7 @@ message User {
   // read only
   string id = 1;
 
-  // required
+  // required on creation or on update
   string display_name = 2;
   taomics.praman.Sex sex = 3;
   taomics.praman.Date birthdate = 4;
@@ -20,6 +20,7 @@ message User {
 
   // optional
   string organization_id = 7;
+  taomics.praman.HealthMode health_mode = 9;
 }
 
 message AccountsUserFetchResponse { User user = 1; }
