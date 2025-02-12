@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package taomics.praman.healthfeedback;
+
+option go_package = "github.com/taomics/pramanapi/healthfeedback";
+
+import "praman.proto";
+
+enum Rating {
+  UNRATED = 0;
+  LIKE = 1;    // 好き
+  DISLIKE = 2; // 嫌い
+}
+
+message HealthFeedback {
+  string id = 1;
+  taomics.praman.HealthMode mode = 2;
+  taomics.praman.Date date = 3;
+  string text = 4;
+  Rating rating = 5;
+}
+
+message GetHealthFeedbackRequest {}
+
+message GetHealthFeedbackResponse { HealthFeedback health_feedback = 1; }
+
+message RateHealthFeedbackRequest {
+  string health_feedback_id = 1;
+  Rating rating = 2;
+}
+
+message SetHealthModeRequest {
+  taomics.praman.HealthMode mode = 1;
+}
+
+// HealthFeedbackService
+//
+// Common Errors:
+//   - INTERNAL (13): Server is something wrong.
+//   - UNAUTHENTICATED (16): Authorization header is something wrong.
+service HealthFeedbackService {
+  // GetHealthFeedback
+  //
+  // Errors: WIP
+  rpc GetHealthFeedback(GetHealthFeedbackRequest)
+      returns (GetHealthFeedbackResponse);
+
+  // RateHealthFeedback
+  //
+  // Errors: WIP
+  rpc RateHealthFeedback(RateHealthFeedbackRequest)
+      returns (taomics.praman.Empty);
+
+  // SetHealthMode
+  //
+  // Errors: WIP
+  rpc SetHealthMode(SetHealthModeRequest)
+      returns (taomics.praman.Empty);
+}
