@@ -38,7 +38,7 @@ message SetHealthModeRequest {
 // Common Errors:
 //   - INTERNAL (13): Server is something wrong.
 //   - UNAUTHENTICATED (16): Authorization header is something wrong.
-service LifestyleJournalService {
+service HealthFeedbackService {
   // GetHealthFeedback
   //
   // Errors: WIP
