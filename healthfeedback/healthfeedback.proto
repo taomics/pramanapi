@@ -26,7 +26,7 @@ message GetHealthFeedbackResponse { HealthFeedback health_feedback = 1; }
 
 message RateHealthFeedbackRequest {
   string health_feedback_id = 1;
-  int32 rating = 2;
+  Rating rating = 2;
 }
 
 message SetHealthModeRequest {
