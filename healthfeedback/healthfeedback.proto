@@ -22,7 +22,12 @@ message HealthFeedback {
 
 message GetHealthFeedbackRequest {}
 
-message GetHealthFeedbackResponse { HealthFeedback health_feedback = 1; }
+message GetHealthFeedbackResponse {
+  // health_feedback will be null if threre is no feedback and the new health feedback is generating.
+  HealthFeedback health_feedback = 1;
+  // generating is true if the new health feedback is generating.
+  bool generating = 2;
+}
 
 message RateHealthFeedbackRequest {
   string health_feedback_id = 1;
@@ -38,22 +43,27 @@ message SetHealthModeRequest {
 // Common Errors:
 //   - INTERNAL (13): Server is something wrong.
 //   - UNAUTHENTICATED (16): Authorization header is something wrong.
+//   - PERMISSION_DENIED (7): User is not authorized.
 service HealthFeedbackService {
   // GetHealthFeedback
   //
-  // Errors: WIP
+  // Errors:
+  //   - NOT_FOUND (5): there is no feedback.
+  //   - FAILED_PRECONDITION (9): health mode is not set.
   rpc GetHealthFeedback(GetHealthFeedbackRequest)
       returns (GetHealthFeedbackResponse);
 
   // RateHealthFeedback
   //
-  // Errors: WIP
+  // Errors:
+  //   - INVALID_ARGUMENT (3): id is invalid, or rating is UNRATED.
   rpc RateHealthFeedback(RateHealthFeedbackRequest)
       returns (taomics.praman.Empty);
 
   // SetHealthMode
   //
-  // Errors: WIP
+  // Errors:
+  //   - INVALID_ARGUMENT (3): mode is missing.
   rpc SetHealthMode(SetHealthModeRequest)
       returns (taomics.praman.Empty);
 }

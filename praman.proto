@@ -6,8 +6,8 @@ option go_package = "github.com/taomics/pramanapi";
 
 // 健康モード
 enum HealthMode {
-  HEALTH_MODE_UNKNOWN = 0; // 不明な健康モード
-  HEALTH_MODE_UNSET = 1;   // 未設定 - 明示的に健康フィードバックをオフにするような場合に利用する
+  HEALTH_MODE_UNKNOWN = 0; // 未設定
+  HEALTH_MODE_UNSET = 1;   // 設定解除 - 明示的に健康フィードバックをオフにするような場合に利用する
   WEIGHT_LOSS = 2;         // 体重コントロール（減量）
   WEIGHT_GAIN = 3;         // 体重コントロール（増量）
   HEALTH_MAINTENANCE = 4;  // 健康維持・最適化
