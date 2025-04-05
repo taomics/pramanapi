@@ -15,7 +15,8 @@ message ExternalData {
 
 message ExternalDataSummary {
   string source = 1;
-  int64 latest = 2;
+  int64 start_time = 3;
+  int64 latest_time = 2;
 }
 
 message StoreExternalDataRequest {
