@@ -112,6 +112,14 @@ service AccountsService {
   rpc UpdateUser(AccountsUserUpdateRequest)
       returns (AccountsUserUpdateResponse);
 
+  // Disable current user account (account_email).
+  //
+  // Errors:
+  //   - NOT_FOUND (5): The specified user id does not exist.
+  //   - PERMISSION_DENIED (7): The requester does not have a user permission.
+  rpc DisableAccount(taomics.praman.Empty)
+      returns (taomics.praman.Empty);
+
   // Gets the current advisor profile using authorization header.
   //
   // Errors:
