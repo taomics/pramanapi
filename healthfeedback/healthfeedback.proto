@@ -23,7 +23,8 @@ message HealthFeedback {
 message GetHealthFeedbackRequest {}
 
 message GetHealthFeedbackResponse {
-  // health_feedback will be null if threre is no feedback and the new health feedback is generating.
+  // health_feedback will be null if threre is no feedback and the new health feedback is
+  // generating.
   HealthFeedback health_feedback = 1;
   // generating is true if the new health feedback is generating.
   bool generating = 2;
@@ -34,8 +35,104 @@ message RateHealthFeedbackRequest {
   Rating rating = 2;
 }
 
-message SetHealthModeRequest {
-  taomics.praman.HealthMode mode = 1;
+message SetHealthModeRequest { taomics.praman.HealthMode mode = 1; }
+
+// 曜日ごとの記録ステータス
+message DailyJournalStatus {
+  taomics.praman.DayOfWeek day_of_week = 1; // 曜日
+  taomics.praman.JournalStatus status = 2;  // 記録ステータス
+}
+
+// 週間目標
+message WeeklyGoal {
+  // 目標の一意な識別子
+  string id = 1;
+
+  // 週のスナップショット
+  string title = 2;              // 例: いつもより多く歩く
+  string target_value_label = 3; // 目標値 (例: 7000歩)
+  int32 target_count = 4;        // ユーザーに「目標回数」として提示される回数。
+  string tips_url = 5;           // 行動変容ヒントURL
+  string health_benefit = 6;     // 健康へのメリット (例: 「歩くことで心肺機能が向上します」)
+
+  // 日次フィードバック、週次フィードバックで参照される情報
+  int32 achieved_count = 7; // ユーザーが行動を達成した実際の回数
+
+  // 週次フィードバックで参照される情報
+  string achievement_comment = 8; // 達成状況のコメント。
+}
+
+// 日次フィードバック
+message WeeklyProgress {
+  int32 weekly_points = 1;                        // 週間で獲得したポイント
+  repeated DailyJournalStatus daily_statuses = 2; // ステータスリスト
+  repeated WeeklyGoal weekly_goals = 3;           // 週間目標のリスト
+}
+
+// 週次フィードバック (基本情報)
+message WeeklyReport {
+  string id = 1;                             // フィードバックID (UUID)
+  taomics.praman.Date start_date = 2;        // フィードバックの対象期間 (開始日)
+  taomics.praman.Date end_date = 3;          // フィードバックの対象期間 (終了日)
+  int32 weekly_points = 4;                   // この週に獲得したポイント
+  taomics.praman.HealthMode health_mode = 5; // フィードバックに使われた健康モード
+  Rating rating = 6;                         // ユーザーの評価
+}
+
+// 週次フィードバック (詳細情報)
+message WeeklyReportDetails {
+  string id = 1;                  // フィードバックID (UUID)
+  WeeklyReport weekly_report = 2; // 週次フィードバック
+
+  // ページネーション
+  string next_feedback_id = 3;
+  string previous_feedback_id = 4;
+
+  // 問診結果
+  repeated DailyJournalStatus daily_statuses = 5; // ステータスリスト
+
+  // 先週の振り返り
+  string last_week_review = 6;             // 先週の振り返り内容
+  repeated WeeklyGoal last_week_goals = 7; // 先週の目標達成状況
+
+  // 今週の目標
+  string reason_for_target_goals = 8;   // 今週の目標を設定した理由
+  repeated WeeklyGoal target_goals = 9; // 今週の目標
+  string encouragement_message = 10;    // 今週の励ましのメッセージ
+}
+
+message RateWeeklyReportRequest {
+  string weekly_report_id = 1;
+  Rating rating = 2;
+}
+
+message GetWeeklyProgressRequest {
+  // Optional: 日付を指定しない場合は、最新の日付が使用されます。
+  taomics.praman.Date date = 1;
+}
+
+message GetWeeklyProgressResponse {
+  // 問診入力達成度 (0.0 ~ 100.0%)
+  float journaling_rate = 1;
+
+  // 連続問診入力回数
+  int32 consecutive_journal_count = 2;
+
+  // 日次フィードバック
+  WeeklyProgress weekly_progress = 3;
+
+  // 最新の週次フィードバック (基本情報)
+  WeeklyReport latest_weekly_report = 4;
+}
+
+message GetWeeklyReportRequest {
+  // Optional: 日付を指定しない場合は、最新の日付が使用されます。
+  taomics.praman.Date date = 1;
+}
+
+message GetWeeklyReportResponse {
+  // 週次フィードバックの詳細
+  WeeklyFeedbackDetails weekly_feedback_details = 1;
 }
 
 // HealthFeedbackService
@@ -50,20 +147,37 @@ service HealthFeedbackService {
   // Errors:
   //   - NOT_FOUND (5): there is no feedback.
   //   - FAILED_PRECONDITION (9): health mode is not set.
-  rpc GetHealthFeedback(GetHealthFeedbackRequest)
-      returns (GetHealthFeedbackResponse);
+  rpc GetHealthFeedback(GetHealthFeedbackRequest) returns (GetHealthFeedbackResponse);
 
   // RateHealthFeedback
   //
   // Errors:
   //   - INVALID_ARGUMENT (3): id is invalid, or rating is UNRATED.
-  rpc RateHealthFeedback(RateHealthFeedbackRequest)
-      returns (taomics.praman.Empty);
+  rpc RateHealthFeedback(RateHealthFeedbackRequest) returns (taomics.praman.Empty);
 
   // SetHealthMode
   //
   // Errors:
   //   - INVALID_ARGUMENT (3): mode is missing.
-  rpc SetHealthMode(SetHealthModeRequest)
-      returns (taomics.praman.Empty);
+  rpc SetHealthMode(SetHealthModeRequest) returns (taomics.praman.Empty);
+
+  // GetWeeklyProgress
+  //
+  // Errors:
+  //   - NOT_FOUND (5): there is no feedback.
+  //   - FAILED_PRECONDITION (9): health mode is not set.
+  rpc GetWeeklyProgress(GetWeeklyProgressRequest) returns (GetWeeklyProgressResponse);
+
+  // GetWeeklyReport
+  //
+  // Errors:
+  //   - NOT_FOUND (5): there is no feedback.
+  //   - FAILED_PRECONDITION (9): health mode is not set.
+  rpc GetWeeklyReport(GetWeeklyReportRequest) returns (GetWeeklyReportResponse);
+
+  // RateWeeklyReport
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): id is invalid, or rating is UNRATED.
+  rpc RateWeeklyReport(RateWeeklyReportRequest) returns (taomics.praman.Empty);
 }
