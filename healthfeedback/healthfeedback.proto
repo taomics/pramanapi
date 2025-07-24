@@ -132,7 +132,7 @@ message GetWeeklyReportRequest {
 
 message GetWeeklyReportResponse {
   // 週次フィードバックの詳細
-  WeeklyFeedbackDetails weekly_feedback_details = 1;
+  WeeklyReport weekly_feedback_details = 1;
 }
 
 // HealthFeedbackService

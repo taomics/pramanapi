@@ -15,6 +15,15 @@ enum HealthMode {
   COGNITIVE_FUNCTION = 6;  // 集中力/認知機能維持・向上
 }
 
+// 問診ステータス
+enum JournalStatus {
+  JOURNAL_STATUS_UNSPECIFIED = 0; // ステータス未指定
+  NOT_RECORDED = 1;               // 1. 未実施
+  RECORDED_MORNING_ONLY = 2;      // 2. 朝のみ実施済み
+  RECORDED_EVENING_ONLY = 3;      // 3. 夜のみ実施済み
+  RECORDED_BOTH = 4;              // 4. 朝・夜実施済み
+}
+
 enum Sex {
   SEX_UNKNOWN = 0;
   MALE = 1;
