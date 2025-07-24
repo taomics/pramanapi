@@ -4,8 +4,6 @@ package taomics.praman.externaldata;
 
 option go_package = "github.com/taomics/pramanapi/externaldata";
 
-import "praman.proto";
-
 message ExternalData {
   string source = 1;
   int64 since = 2;
