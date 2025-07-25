@@ -37,12 +37,6 @@ message RateHealthFeedbackRequest {
 
 message SetHealthModeRequest { taomics.praman.HealthMode mode = 1; }
 
-// 曜日ごとの記録ステータス
-message DailyJournalStatus {
-  taomics.praman.DayOfWeek day_of_week = 1; // 曜日
-  taomics.praman.JournalStatus status = 2;  // 記録ステータス
-}
-
 // 週間目標
 message WeeklyGoal {
   // 目標の一意な識別子
@@ -64,9 +58,12 @@ message WeeklyGoal {
 
 // 日次フィードバック
 message WeeklyProgress {
-  int32 weekly_points = 1;                        // 週間で獲得したポイント
-  repeated DailyJournalStatus daily_statuses = 2; // ステータスリスト
-  repeated WeeklyGoal weekly_goals = 3;           // 週間目標のリスト
+  // 週間で獲得したポイント
+  int32 weekly_points = 1;
+  // ステータスリスト: key は taomics.praman.DayOfWeek の値です。
+  map<int32, taomics.praman.JournalStatus> daily_statuses = 2;
+  // 週間目標のリスト
+  repeated WeeklyGoal weekly_goals = 3;
 }
 
 // 週次フィードバック (基本情報)
@@ -89,7 +86,8 @@ message WeeklyReportDetails {
   string previous_feedback_id = 4;
 
   // 問診結果
-  repeated DailyJournalStatus daily_statuses = 5; // ステータスリスト
+  // key は taomics.praman.DayOfWeek の値です。
+  map<int32, taomics.praman.JournalStatus> daily_statuses = 5;
 
   // 先週の振り返り
   string last_week_review = 6;             // 先週の振り返り内容
