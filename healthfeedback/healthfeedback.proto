@@ -82,8 +82,8 @@ message WeeklyReportDetails {
   WeeklyReport weekly_report = 2; // 週次フィードバック
 
   // ページネーション
-  string next_feedback_id = 3;
-  string previous_feedback_id = 4;
+  string next_report_id = 3;
+  string previous_report_id = 4;
 
   // 問診結果
   // key は taomics.praman.DayOfWeek の値です。
@@ -130,7 +130,7 @@ message GetWeeklyReportRequest {
 
 message GetWeeklyReportResponse {
   // 週次フィードバックの詳細
-  WeeklyReport weekly_feedback_details = 1;
+  WeeklyReportDetails weekly_report_details = 1;
 }
 
 // HealthFeedbackService
@@ -162,14 +162,14 @@ service HealthFeedbackService {
   // GetWeeklyProgress
   //
   // Errors:
-  //   - NOT_FOUND (5): there is no feedback.
+  //   - NOT_FOUND (5): there is no progress.
   //   - FAILED_PRECONDITION (9): health mode is not set.
   rpc GetWeeklyProgress(GetWeeklyProgressRequest) returns (GetWeeklyProgressResponse);
 
   // GetWeeklyReport
   //
   // Errors:
-  //   - NOT_FOUND (5): there is no feedback.
+  //   - NOT_FOUND (5): there is no report.
   //   - FAILED_PRECONDITION (9): health mode is not set.
   rpc GetWeeklyReport(GetWeeklyReportRequest) returns (GetWeeklyReportResponse);
 
