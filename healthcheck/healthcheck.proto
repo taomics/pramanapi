@@ -15,8 +15,8 @@ message HealthCheckParameter {
   float predicted_value_1year = 5;  // 1年後の健診結果
   float predicted_value_3years = 6; // 3年後の健診結果
 
-  HealthRisk risk = 7;     // パラメータのリスクレベル
-  string caution_note = 8; // パラメータの注意事項
+  HealthRisk risk = 7;                         // パラメータのリスクレベル
+  string caution_note = 8;                     // パラメータの注意事項
   repeated Recommendation recommendations = 9; // 優先して改善すべき問診項目
 
   // 基準値
@@ -77,6 +77,45 @@ message UploadHealthCheckResultRequest { HealthCheckUploadData data = 1; }
 
 message UploadHealthCheckResultResponse {}
 
+message RegisterHealthCheckResultRequest {
+  // 健診日
+  taomics.praman.Date date = 1;
+
+  float height = 2;
+  float weight = 3;
+  float bmi = 4;
+  float white_blood_cells = 5;
+  float red_blood_cells = 6;
+  float hemoglobin = 7;
+  float hematocrit = 8;
+  float gamma_gtp = 9;
+  float ast = 10;
+  float alt = 11;
+  float blood_urena_nitrogen = 12;
+  float creatinine = 13;
+  float uric_acid = 14;
+  float triglycerides = 15;
+  float hdl = 16;
+  float ldl = 17;
+  float fasting_blood_sugar = 18;
+  float hba1c = 19;
+  float systolic_bp = 20;
+  float diastolic_bp = 21;
+  float estimated_gfr = 22;
+  float waist = 23;
+  bool drink = 24;
+  Smoker smoker = 25;
+
+  enum Smoker {
+    SMOKER_UNKNOWN = 0;        // 不明
+    SMOKER_NON = 1;            // 非喫煙者
+    SMOKER_CURRENT_SMOKER = 2;        // 喫煙者
+    SMOKER_FORMER_SMOKER = 3; // 元喫煙者
+  }
+}
+
+message RegisterHealthCheckResultResponse {}
+
 // HealthCheckService
 //
 // Common Errors:
@@ -99,4 +138,13 @@ service HealthCheckService {
   //   - ALREADY_EXISTS (6): The health check data is already exists.
   rpc UploadHealthCheckResult(UploadHealthCheckResultRequest)
       returns (UploadHealthCheckResultResponse);
+
+  // Regsiter health check result.
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): The upload data is invalid.
+  //   - FAILED_PRECONDITION (9): The upload data is not acceptable.
+  //   - ALREADY_EXISTS (6): The health check data is already exists.
+  rpc RegisterHealthCheckResult(RegisterHealthCheckResultRequest)
+      returns (RegisterHealthCheckResultResponse);
 }
