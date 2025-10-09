@@ -23,7 +23,7 @@ message HealthFeedback {
 message GetHealthFeedbackRequest {}
 
 message GetHealthFeedbackResponse {
-  // health_feedback will be null if threre is no feedback and the new health feedback is
+  // health_feedback will be null if there is no feedback and the new health feedback is
   // generating.
   HealthFeedback health_feedback = 1;
   // generating is true if the new health feedback is generating.
