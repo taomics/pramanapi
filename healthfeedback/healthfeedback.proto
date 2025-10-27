@@ -102,7 +102,9 @@ message RateWeeklyReportRequest {
   Rating rating = 2;
 }
 
-message GetWeeklyProgressRequest {}
+message GetWeeklyProgressRequest {
+  taomics.praman.Date date = 1; // 週の任意の日付
+}
 
 message GetWeeklyProgressResponse {
   // 問診入力達成度 (0.0 ~ 100.0%)
