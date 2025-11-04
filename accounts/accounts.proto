@@ -33,6 +33,17 @@ message AccountsUserUpdateRequest { User user = 1; }
 
 message AccountsUserUpdateResponse { string user_id = 1; }
 
+message VerifyEmailRequest {
+  string verifier = 1;
+  ActionType action_type = 2;
+
+  enum ActionType {
+    UNKNOWN = 0;
+    REGISTER = 1;
+    CHANGE_EMAIL = 2;
+  }
+}
+
 message Advisor {
   string id = 1; // read only
   string display_name = 2;
@@ -62,21 +73,16 @@ message Authorization {
   bool granted = 6;
 }
 
-message AccountsAuthorizationCreationRequest {
-  repeated PermissionScope scopes = 1;
-}
+message AccountsAuthorizationCreationRequest { repeated PermissionScope scopes = 1; }
 
 message AccountsAuthorizationCreationResponse {
-  Authorization authorization =
-      1; // creation response does not includes requester
+  Authorization authorization = 1;  // creation response does not includes requester
   taomics.praman.Image qr_code = 2; // qr_code includes only authorization id
 }
 
 message AccountsAuthorizationRetrievalRequest { string authorization_id = 1; }
 
-message AccountsAuthorizationRetrievalResponse {
-  Authorization authorization = 1;
-}
+message AccountsAuthorizationRetrievalResponse { Authorization authorization = 1; }
 
 message AccountsAuthorizationGrantRequest {
   string authorization_id = 1;
@@ -101,40 +107,50 @@ service AccountsService {
   //
   // Errors:
   //   - INVALID_ARGUMENT (3): There is an invalid argument
-  rpc RegisterUser(AccountsUserCreationRequest)
-      returns (AccountsUserCreationResponse);
+  rpc RegisterUser(AccountsUserCreationRequest) returns (AccountsUserCreationResponse);
 
   // Updates current user profile.
   //
   // Errors:
   //   - INVALID_ARGUMENT (3): There is an invalid argument
   //   - PERMISSION_DENIED (7): The requester does not have a user permission.
-  rpc UpdateUser(AccountsUserUpdateRequest)
-      returns (AccountsUserUpdateResponse);
+  rpc UpdateUser(AccountsUserUpdateRequest) returns (AccountsUserUpdateResponse);
 
   // Disable current user account (account_email).
   //
   // Errors:
   //   - NOT_FOUND (5): The specified user id does not exist.
   //   - PERMISSION_DENIED (7): The requester does not have a user permission.
-  rpc DisableAccount(taomics.praman.Empty)
-      returns (taomics.praman.Empty);
+  rpc DisableAccount(taomics.praman.Empty) returns (taomics.praman.Empty);
+
+  // Verify current user email.
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): There is an invalid argument
+  //   - PERMISSION_DENIED (7): The requester does not have a user permission.
+  //   - FAILED_PRECONDITION (9): The current user have some problems.
+  rpc VerifyEmail(VerifyEmailRequest) returns (taomics.praman.Empty);
+
+  // Send verification email to current user email.
+  //
+  // Errors:
+  //   - PERMISSION_DENIED (7): The requester does not have a user permission
+  //   - FAILED_PRECONDITION (9): The current user have some problems.
+  rpc SendVerificationEmail(taomics.praman.Empty) returns (taomics.praman.Empty);
 
   // Gets the current advisor profile using authorization header.
   //
   // Errors:
   //   - PERMISSION_DENIED (7): The requester does not have a advisor
   //   permission.
-  rpc CurrentAdvisor(taomics.praman.Empty)
-      returns (AccountsAdvisorFetchResponse);
+  rpc CurrentAdvisor(taomics.praman.Empty) returns (AccountsAdvisorFetchResponse);
 
   // Updates current advisor profile.
   //
   // Errors:
   //   - INVALID_ARGUMENT (3): There is an invalid argument
   //   - PERMISSION_DENIED (7): The requester does not have a user permission.
-  rpc UpdateAdvisor(AccountsAdvisorUpdateRequest)
-      returns (AccountsAdvisorUpdateResponse);
+  rpc UpdateAdvisor(AccountsAdvisorUpdateRequest) returns (AccountsAdvisorUpdateResponse);
 
   // Create an authorization request.
   //
