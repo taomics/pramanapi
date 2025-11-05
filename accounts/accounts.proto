@@ -6,6 +6,18 @@ option go_package = "github.com/taomics/pramanapi/accounts";
 
 import "praman.proto";
 
+message ErrorInfo {
+  string message = 1;
+  string reason = 2;
+
+  enum Reason {
+    UNKNOWN = 0;
+    NOT_REGISTERED = 1;
+    NOT_VERIFIED = 2;
+    DISABLED = 3;
+  }
+}
+
 message User {
   // read only
   string id = 1;
