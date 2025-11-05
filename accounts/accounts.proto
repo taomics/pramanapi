@@ -46,7 +46,7 @@ message AccountsUserUpdateRequest { User user = 1; }
 message AccountsUserUpdateResponse { string user_id = 1; }
 
 message VerifyEmailRequest {
-  string verifier = 1;
+  string code = 1;
   ActionType action_type = 2;
 
   enum ActionType {
