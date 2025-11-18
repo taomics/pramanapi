@@ -107,7 +107,7 @@ message AccountsAuthorizationGrantResponse { Authorization authorization = 1; }
 //
 // Common Errors:
 //   - INTERNAL (13): Server is something wrong.
-//   - FAILED_PRECONDITION (9): The current user have some problems.
+//   - FAILED_PRECONDITION (9): The current user has some problems.
 //     - ErrorInfo is included in the details of the error.
 //   - UNAUTHENTICATED (16): Authorization header is something wrong.
 service AccountsService {
