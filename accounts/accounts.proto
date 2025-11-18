@@ -148,7 +148,7 @@ service AccountsService {
   // Send verification email to current user email.
   //
   // Errors:
-  //   - PERMISSION_DENIED (7): The requester does not have a user permission
+  //   - PERMISSION_DENIED (7): The requester does not have a user permission.
   //   - RESOURCE_EXHAUSTED (8): Max attempt counts exceeded.
   rpc SendVerificationEmail(taomics.praman.Empty) returns (taomics.praman.Empty);
 
