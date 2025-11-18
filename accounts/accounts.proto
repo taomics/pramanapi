@@ -11,7 +11,7 @@ message ErrorInfo {
   Reason reason = 2;
 
   enum Reason {
-    UNKNOWN = 0;
+    REASON_UNSPECIFIED = 0;
     NOT_REGISTERED = 1;
     NOT_VERIFIED = 2;
     DISABLED = 3;
@@ -50,7 +50,7 @@ message VerifyEmailRequest {
   ActionType action_type = 2;
 
   enum ActionType {
-    UNKNOWN = 0;
+    ACTIONTYPE_UNSPECIFIED = 0;
     REGISTER = 1;
     CHANGE_EMAIL = 2;
   }
