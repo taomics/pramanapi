@@ -13,11 +13,23 @@ import "recordlog_type.proto";
 */
 
 enum TrackerStatus {
-  NO_TRACKER = 0;      // トラッカーを使っていない
-  FITBIT_RAW = 1;      // Fitbit のデータを利用している
-  FITBIT_MODIFIED = 2; // Fitbit のデータを一部変更して利用している
-  APPLE_WATCH_RAW = 3; // Apple Watch のデータを利用している
+  NO_TRACKER = 0;           // トラッカーを使っていない
+  FITBIT_RAW = 1;           // Fitbit のデータを利用している
+  FITBIT_MODIFIED = 2;      // Fitbit のデータを一部変更して利用している
+  APPLE_WATCH_RAW = 3;      // Apple Watch のデータを利用している
   APPLE_WATCH_MODIFIED = 4; // Apple Watch のデータを一部変更して利用している
+}
+
+message TrackerSegment {
+  enum Type {
+    UNKNOWN = 0;
+    GENERAL = 1;
+    SLEEP = 2;
+  }
+
+  Type type = 1;
+  int64 start_time = 2; // UNIXTIME
+  int64 end_time = 3;   // UNIXTIME
 }
 
 enum Sleepiness {
@@ -127,8 +139,8 @@ message JournalIndulgence {
 
   enum TabaccoType {
     TABACCO_TYPE_NONE = 0;
-    CIGARETTES = 1; // 紙巻タバコ
-    HEATED = 2; // 加熱式タバコ（アイコス、プルーム、グローなど）
+    CIGARETTES = 1;            // 紙巻タバコ
+    HEATED = 2;                // 加熱式タバコ（アイコス、プルーム、グローなど）
     ELECTRONIC = 3;            // 電子タバコ（VAPEなど）
     CIGARETTES_HEATED = 4;     // 紙巻タバコと加熱式タバコを併用
     CIGARETTES_ELECTRONIC = 5; // 紙巻タバコと電子タバコを併用
@@ -180,7 +192,7 @@ message JournalActivity {
     uint32 sitting_minutes = 6;   // 座位時間（分）
   }
 
-  uint32 activity_minutes = 3; // 有酸素運動(アクティブ)時間
+  uint32 activity_minutes = 3;                      // 有酸素運動(アクティブ)時間
   repeated StrengthTraining strength_trainings = 4; // 筋トレ
 }
 
@@ -252,6 +264,7 @@ message JournalBodyMetrics {
 message LifestyleJournalKeepingRequest {
   taomics.praman.Date date = 1;
   TrackerStatus tracker_status = 2;
+  repeated TrackerSegment tracker_segments = 6;
 
   // 睡眠。起床時の問診で記録します。
   JournalSleep sleep = 3;
@@ -430,8 +443,7 @@ service LifestyleJournalService {
   //
   // Errors:
   //   - INVALID_ARGUMENT (3): There is an invalid argument
-  rpc KeepJournal(LifestyleJournalKeepingRequest)
-      returns (LifestyleJournalKeepingResponse);
+  rpc KeepJournal(LifestyleJournalKeepingRequest) returns (LifestyleJournalKeepingResponse);
 
   // Evaluate the challenge scores based on the latest journal records.
   // It requires a minimum number of journal records to perform an evaluation.
