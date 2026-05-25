@@ -106,6 +106,12 @@ message JournalMeal {
   Quantity side = 3;   // 副菜
   bool dairy = 4;      // 乳製品
   bool fruit = 5;      // 果物
+
+  float starch_amount = 6; // 主食SV
+  float main_amount = 7;   // 主菜SV
+  float side_amount = 8;   // 副菜SV
+  float dairy_amount = 9;  // 乳製品SV
+  float fruit_amount = 10; // 果物SV
 }
 
 message JournalIndulgence {
