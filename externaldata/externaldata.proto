@@ -24,6 +24,14 @@ message StoreExternalDataRequest {
 
 message StoreExternalDataResponse {}
 
+message DeleteExternalDataRequest {
+  // The source of external data to delete. Required.
+  // Specify "*" to delete data from all external data sources.
+  string source = 1;
+}
+
+message DeleteExternalDataResponse {}
+
 message ExternalDataSummaryRequest {
   // sources specified the summaries of external data. If sources is empty, return all summaries.
   repeated string sources = 1;
@@ -45,6 +53,13 @@ service ExternalDataService {
   // Errors:
   //   - INVALID_ARGUMENT (3): There is an invalid argument
   rpc StoreExternalData(StoreExternalDataRequest) returns (StoreExternalDataResponse);
+
+  // Delete external data for the current user.
+  //
+  // Specify "*" as source to delete data from all external data sources.
+  // Errors:
+  //   - INVALID_ARGUMENT (3): Source is empty or invalid.
+  rpc DeleteExternalData(DeleteExternalDataRequest) returns (DeleteExternalDataResponse);
 
   // Get external data summary.
   // Errors:
