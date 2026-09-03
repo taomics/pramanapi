@@ -24,10 +24,16 @@ message StoreExternalDataRequest {
 
 message StoreExternalDataResponse {}
 
+enum ExternalDataSourceGroup {
+  EXTERNAL_DATA_SOURCE_GROUP_UNSPECIFIED = 0;
+  EXTERNAL_DATA_SOURCE_GROUP_ALL = 1;
+  EXTERNAL_DATA_SOURCE_GROUP_GOOGLE_HEALTH = 2;
+}
+
 message DeleteExternalDataRequest {
-  // The source of external data to delete. Required.
-  // Specify "*" to delete data from all external data sources.
-  string source = 1;
+  // The source group of external data to delete. Required.
+  // Specify EXTERNAL_DATA_SOURCE_GROUP_ALL to delete all external data.
+  ExternalDataSourceGroup source_group = 1;
 }
 
 message DeleteExternalDataResponse {}
@@ -56,9 +62,9 @@ service ExternalDataService {
 
   // Delete external data for the current user.
   //
-  // Specify "*" as source to delete data from all external data sources.
+  // Specify EXTERNAL_DATA_SOURCE_GROUP_ALL to delete all external data.
   // Errors:
-  //   - INVALID_ARGUMENT (3): Source is empty or invalid.
+  //   - INVALID_ARGUMENT (3): Source group is unspecified or invalid.
   rpc DeleteExternalData(DeleteExternalDataRequest) returns (DeleteExternalDataResponse);
 
   // Get external data summary.
