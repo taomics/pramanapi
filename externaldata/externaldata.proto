@@ -47,7 +47,7 @@ message ExternalDataSummaryResponse {
   repeated ExternalDataSummary summaries = 1;
 }
 
-// ExternalDataservice
+// ExternalDataService
 //
 // Common Errors:
 //   - PERMISSION_DENIED (7): User has no permission to access the resource.
@@ -62,9 +62,16 @@ service ExternalDataService {
 
   // Delete external data for the current user.
   //
+  // A successful response indicates that data in the specified source group
+  // is no longer associated with the current user. Internal processing for
+  // preserving other source groups or physical cleanup may continue or be
+  // handled separately.
+  //
   // Specify EXTERNAL_DATA_SOURCE_GROUP_ALL to delete all external data.
+  //
   // Errors:
   //   - INVALID_ARGUMENT (3): Source group is unspecified or invalid.
+  //   - RESOURCE_EXHAUSTED (8): Another deletion was completed within the last hour.
   rpc DeleteExternalData(DeleteExternalDataRequest) returns (DeleteExternalDataResponse);
 
   // Get external data summary.
