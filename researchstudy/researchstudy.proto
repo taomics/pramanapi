@@ -1,0 +1,128 @@
+syntax = "proto3";
+
+package taomics.praman.researchstudy;
+
+option go_package = "github.com/taomics/pramanapi/researchstudy";
+
+import "praman.proto";
+
+// Role of an organization participating in a research study.
+enum ResearchOrganizationRole {
+  RESEARCH_ORGANIZATION_ROLE_UNSPECIFIED = 0;
+  RESEARCH_ORGANIZATION_ROLE_LEAD_INSTITUTION = 1;          // 研究代表機関
+  RESEARCH_ORGANIZATION_ROLE_COLLABORATING_INSTITUTION = 2; // 共同研究機関
+  RESEARCH_ORGANIZATION_ROLE_OTHER = 3;
+}
+
+message ResearchOrganization {
+  string name = 1;
+  ResearchOrganizationRole role = 2;
+}
+
+// Contact information presented to the user for questions about the study.
+message ResearchContact {
+  string name = 1;
+  string email = 2;
+  string phone = 3;
+  string url = 4;
+}
+
+// Information sufficient to identify and understand a study in the study list.
+message ResearchStudySummary {
+  // The stable UUID of the research study, used to link with AlloyDB.
+  // Format: "00000000-0000-0000-0000-000000000000"
+  string id = 1;
+
+  string name = 2;
+  string purpose = 3;
+  repeated ResearchOrganization organizations = 4;
+  string target_population_summary = 5;
+  string data_description = 6;
+  taomics.praman.Date project_start_date = 7;
+  taomics.praman.Date project_end_date = 8;
+}
+
+// Detailed research information presented to a user who is registered as a
+// target of the study in Taohealth.
+message ResearchStudy {
+  ResearchStudySummary summary = 1;
+
+  string risks_and_benefits = 2;
+  string privacy_security_data_handling = 3;
+
+  // How the study uses and shares data, including the scope of recipients.
+  string data_use_and_sharing_description = 4;
+
+  string data_retention_policy = 5;
+  string withdrawal_method = 6;
+  string data_deletion_policy = 7;
+  ResearchContact contact = 8;
+
+  // Human-readable information about the applicable IRB/EC approval.
+  // Taohealth does not manage the ethics-review workflow.
+  string ethics_review_information = 9;
+
+  // URLs for research information and documents that the user may retain.
+  string research_disclosure_url = 10;
+  string informed_consent_document_url = 11;
+  string results_url = 12;
+}
+
+message ResearchStudyListItem {
+  ResearchStudySummary study = 1;
+
+  // True when the current user is registered as a target of this study in
+  // Taohealth. This does not represent informed-consent status.
+  bool is_target = 2;
+}
+
+message ListResearchStudiesRequest {}
+
+message ListResearchStudiesResponse {
+  // Includes public studies and non-public studies for which the current user
+  // is registered as a target.
+  repeated ResearchStudyListItem studies = 1;
+}
+
+message GetResearchStudyRequest {
+  // The UUID of the research study (matches ResearchStudySummary.id).
+  string research_study_id = 1;
+}
+
+message GetResearchStudyResponse {
+  ResearchStudy study = 1;
+}
+
+// ResearchStudyService
+//
+// This service presents research information and the current user's relation
+// to research studies. It does not manage study enrollment, informed consent,
+// data-provision workflow, or ethics-review workflows.
+//
+// Research-study definitions are application-managed static data. The service
+// uses persistent storage only for dynamic relations such as the association
+// between a user and a study.
+//
+// Common Errors:
+//   - INTERNAL (13): An unexpected server error occurred.
+//   - UNAUTHENTICATED (16): Authentication failed.
+service ResearchStudyService {
+  // List research studies visible to the current user.
+  //
+  // The response contains:
+  //   - all public studies; and
+  //   - non-public studies for which the current user is registered as a
+  //     target.
+  rpc ListResearchStudies(ListResearchStudiesRequest) returns (ListResearchStudiesResponse);
+
+  // Get detailed information about a research study.
+  //
+  // Detailed information is available only when the current user is registered
+  // as a target of the specified study, including when the study is public.
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): research_study_id is empty or invalid.
+  //   - NOT_FOUND (5): The study does not exist or is not accessible to the
+  //     current user.
+  rpc GetResearchStudy(GetResearchStudyRequest) returns (GetResearchStudyResponse);
+}
