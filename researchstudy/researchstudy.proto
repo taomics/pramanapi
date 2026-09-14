@@ -29,7 +29,7 @@ message ResearchContact {
 
 // Information sufficient to identify and understand a study in the study list.
 message ResearchStudySummary {
-  // The stable UUID of the research study, used to link with AlloyDB.
+  // The stable UUID of the research study.
   // Format: "00000000-0000-0000-0000-000000000000"
   string id = 1;
 
