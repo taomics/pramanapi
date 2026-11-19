@@ -15,8 +15,8 @@ message HealthCheckParameter {
   float predicted_value_1year = 5;  // 1年後の健診結果
   float predicted_value_3years = 6; // 3年後の健診結果
 
-  HealthRisk risk = 7;     // パラメータのリスクレベル
-  string caution_note = 8; // パラメータの注意事項
+  HealthRisk risk = 7;                         // パラメータのリスクレベル
+  string caution_note = 8;                     // パラメータの注意事項
   repeated Recommendation recommendations = 9; // 優先して改善すべき問診項目
 
   // 基準値
@@ -47,12 +47,12 @@ message HealthCheckParameter {
 
 message HealthCheckUploadData {
   string issuer = 1;                  // 医療機関名
-  string issuer_code = 2;             // 処方箋発行医療機関コード
+  string issuer_code = 2;             // 保険医療機関番号（処方箋発行機関コード）
   taomics.praman.Date issue_date = 3; // QRコード発行日
   repeated Result results = 4;        // 健康診断結果
 
   message Result {
-    taomics.praman.Date date = 1; // 健康診断受信日
+    taomics.praman.Date date = 1; // 健康診断受診日
     string ver = 2;               // 健康診断データバージョン
     string data = 3;              // 健康診断データ
   }
@@ -77,6 +77,22 @@ message UploadHealthCheckResultRequest { HealthCheckUploadData data = 1; }
 
 message UploadHealthCheckResultResponse {}
 
+message ImportMynaPortalHealthCheckRequest {
+  // OAuth authorization code used to exchange for an access token.
+  string code = 1;
+
+  // OAuth redirect_uri used to exchange for an access token.
+  string redirect_uri = 2;
+}
+
+message ImportMynaPortalHealthCheckResponse {
+  // List of imported dates.
+  repeated taomics.praman.Date imported_dates = 1;
+
+  // Count of skipped dates that already exist.
+  int32 already_exists_count = 2;
+}
+
 // HealthCheckService
 //
 // Common Errors:
@@ -88,15 +104,24 @@ service HealthCheckService {
   //
   // Errors:
   //   - NOT_FOUND (5): The health check data is not found.
-  rpc PredictHealthCheck(HealthCheckPredictionRequest)
-      returns (HealthCheckPredictionResponse);
+  rpc PredictHealthCheck(HealthCheckPredictionRequest) returns (HealthCheckPredictionResponse);
 
   // Upload health check result.
   //
   // Errors:
   //   - INVALID_ARGUMENT (3): The upload data is invalid.
   //   - FAILED_PRECONDITION (9): The upload data is not acceptable.
-  //   - ALREADY_EXISTS (6): The health check data is already exists.
+  //   - ALREADY_EXISTS (6): The health check data already exists.
   rpc UploadHealthCheckResult(UploadHealthCheckResultRequest)
       returns (UploadHealthCheckResultResponse);
+
+  // Import health check results from Myna Portal API.
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): code or redirect_uri is invalid, empty, or expired.
+  //   - FAILED_PRECONDITION (9): User profile (e.g. birthdate or sex) does not match Myna Portal
+  //   record.
+  //   - UNAVAILABLE (14): Myna Portal API is temporarily unavailable (e.g. maintenance or timeout).
+  rpc ImportMynaPortalHealthCheck(ImportMynaPortalHealthCheckRequest)
+      returns (ImportMynaPortalHealthCheckResponse);
 }
