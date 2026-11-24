@@ -11,12 +11,12 @@ message HealthCheckParameter {
   string unit = 2;        // パラメータの単位
   string description = 3; // パラメータの説明
 
-  float current_value = 4;          // 最新の健診結果
-  float predicted_value_1year = 5;  // 1年後の健診結果
-  float predicted_value_3years = 6; // 3年後の健診結果
+  float current_value = 4;                   // 最新の健診結果
+  optional float predicted_value_1year = 5;  // 1年後の健診結果（予測不可時は未設定）
+  optional float predicted_value_3years = 6; // 3年後の健診結果（予測不可時は未設定）
 
-  HealthRisk risk = 7;     // パラメータのリスクレベル
-  string caution_note = 8; // パラメータの注意事項
+  HealthRisk risk = 7;                         // パラメータのリスクレベル
+  string caution_note = 8;                     // パラメータの注意事項
   repeated Recommendation recommendations = 9; // 優先して改善すべき問診項目
 
   // 基準値
@@ -47,20 +47,23 @@ message HealthCheckParameter {
 
 message HealthCheckUploadData {
   string issuer = 1;                  // 医療機関名
-  string issuer_code = 2;             // 処方箋発行医療機関コード
+  string issuer_code = 2;             // 保険医療機関番号（処方箋発行機関コード）
   taomics.praman.Date issue_date = 3; // QRコード発行日
   repeated Result results = 4;        // 健康診断結果
 
   message Result {
-    taomics.praman.Date date = 1; // 健康診断受信日
+    taomics.praman.Date date = 1; // 健康診断受診日
     string ver = 2;               // 健康診断データバージョン
     string data = 3;              // 健康診断データ
   }
 }
 
 message HealthCheckPredictionRequest {
-  // 健診の日付。何も指定がなければ最新の結果を返します。
+  // 健診の日付。id・date ともに未指定の場合は最新の健診結果を返します。
   taomics.praman.Date date = 1;
+
+  // 健診結果 ID (UUID)。指定された場合は date より優先して該当レコードを返します。
+  string id = 2;
 }
 
 message HealthCheckPredictionResponse {
@@ -70,12 +73,87 @@ message HealthCheckPredictionResponse {
   // 健診結果と予測
   // 最新の健診結果と1年後、3年後の健診結果を健康診断項目毎に返します。
   // 1年後の健診結果と3年後の値は、最新の健診結果から予測された値です。
+  // prediction_available が false の場合は、測定済みの現在値（current_value 等）のみ返却されます。
   repeated HealthCheckParameter parameters = 2;
+
+  // この健診結果に対してAI予測値が算出されているか。
+  // false の場合は、各パラメータの current_value 等の検査結果のみが有効。
+  bool prediction_available = 3;
 }
 
 message UploadHealthCheckResultRequest { HealthCheckUploadData data = 1; }
 
 message UploadHealthCheckResultResponse {}
+
+message ImportMynaPortalHealthCheckRequest {
+  // OAuth authorization code used to exchange for an access token.
+  string code = 1;
+
+  // OAuth redirect_uri used to exchange for an access token.
+  string redirect_uri = 2;
+}
+
+message ImportMynaPortalHealthCheckResponse {
+  // List of imported dates.
+  repeated taomics.praman.Date imported_dates = 1;
+
+  // Count of skipped dates that already exist.
+  int32 already_exists_count = 2;
+}
+
+enum HealthCheckRecordType {
+  HEALTH_CHECK_RECORD_TYPE_UNSPECIFIED = 0;
+  HEALTH_CHECK_RECORD_TYPE_QR_CODE = 1;     // QRコード取込
+  HEALTH_CHECK_RECORD_TYPE_MYNA_PORTAL = 2; // マイナポータル連携取込
+  HEALTH_CHECK_RECORD_TYPE_MANUAL = 3;      // マニュアル入力
+}
+
+message HealthCheckResultSummary {
+  // Health check result ID (UUID).
+  string id = 1;
+
+  // Health check date.
+  taomics.praman.Date date = 2;
+
+  // Record type indicating how the result was imported.
+  HealthCheckRecordType record_type = 3;
+
+  // Name of the issuing or examining institution, if available.
+  string issuer = 4;
+
+  // Whether AI prediction results are available for this health check result.
+  bool is_predictable = 5;
+}
+
+message ListHealthCheckResultsRequest {}
+
+message ListHealthCheckResultsResponse {
+  // Health check results ordered by date descending.
+  repeated HealthCheckResultSummary results = 1;
+}
+
+message DownloadHealthCheckResultRequest {
+  // Health check result ID (UUID).
+  string id = 1;
+}
+
+message DownloadHealthCheckResultResponse {
+  // Exported file payload (UTF-8 encoded JSON bytes).
+  bytes data = 1;
+
+  // Suggested file name (e.g. healthcheck_2024-05-10.json).
+  string file_name = 2;
+
+  // MIME content type (e.g. application/json).
+  string content_type = 3;
+}
+
+message DeleteHealthCheckResultRequest {
+  // Health check result ID (UUID).
+  string id = 1;
+}
+
+message DeleteHealthCheckResultResponse {}
 
 // HealthCheckService
 //
@@ -87,16 +165,46 @@ service HealthCheckService {
   // Predict health check result in the future.
   //
   // Errors:
+  //   - INVALID_ARGUMENT (3): id is invalid.
   //   - NOT_FOUND (5): The health check data is not found.
-  rpc PredictHealthCheck(HealthCheckPredictionRequest)
-      returns (HealthCheckPredictionResponse);
+  rpc PredictHealthCheck(HealthCheckPredictionRequest) returns (HealthCheckPredictionResponse);
 
   // Upload health check result.
   //
   // Errors:
   //   - INVALID_ARGUMENT (3): The upload data is invalid.
   //   - FAILED_PRECONDITION (9): The upload data is not acceptable.
-  //   - ALREADY_EXISTS (6): The health check data is already exists.
+  //   - ALREADY_EXISTS (6): The health check data already exists.
   rpc UploadHealthCheckResult(UploadHealthCheckResultRequest)
       returns (UploadHealthCheckResultResponse);
+
+  // Import health check results from Myna Portal API.
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): code or redirect_uri is invalid, empty, or expired.
+  //   - FAILED_PRECONDITION (9): User profile (e.g. birthdate or sex) does not match Myna Portal
+  //   record.
+  //   - UNAVAILABLE (14): Myna Portal API is temporarily unavailable (e.g. maintenance or timeout).
+  rpc ImportMynaPortalHealthCheck(ImportMynaPortalHealthCheckRequest)
+      returns (ImportMynaPortalHealthCheckResponse);
+
+  // List imported health check results for the current user.
+  rpc ListHealthCheckResults(ListHealthCheckResultsRequest)
+      returns (ListHealthCheckResultsResponse);
+
+  // Download a health check result as a portable JSON file.
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): id is empty or invalid.
+  //   - NOT_FOUND (5): The health check result is not found.
+  rpc DownloadHealthCheckResult(DownloadHealthCheckResultRequest)
+      returns (DownloadHealthCheckResultResponse);
+
+  // Delete a health check result for the current user.
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): id is empty or invalid.
+  //   - NOT_FOUND (5): The health check result is not found.
+  rpc DeleteHealthCheckResult(DeleteHealthCheckResultRequest)
+      returns (DeleteHealthCheckResultResponse);
 }
