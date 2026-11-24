@@ -11,9 +11,9 @@ message HealthCheckParameter {
   string unit = 2;        // パラメータの単位
   string description = 3; // パラメータの説明
 
-  float current_value = 4;          // 最新の健診結果
-  float predicted_value_1year = 5;  // 1年後の健診結果
-  float predicted_value_3years = 6; // 3年後の健診結果
+  float current_value = 4;                   // 最新の健診結果
+  optional float predicted_value_1year = 5;  // 1年後の健診結果（予測不可時は未設定）
+  optional float predicted_value_3years = 6; // 3年後の健診結果（予測不可時は未設定）
 
   HealthRisk risk = 7;                         // パラメータのリスクレベル
   string caution_note = 8;                     // パラメータの注意事項
@@ -59,8 +59,11 @@ message HealthCheckUploadData {
 }
 
 message HealthCheckPredictionRequest {
-  // 健診の日付。何も指定がなければ最新の結果を返します。
+  // 健診の日付。id・date ともに未指定の場合は最新の健診結果を返します。
   taomics.praman.Date date = 1;
+
+  // 健診結果 ID (UUID)。指定された場合は date より優先して該当レコードを返します。
+  string id = 2;
 }
 
 message HealthCheckPredictionResponse {
@@ -70,7 +73,12 @@ message HealthCheckPredictionResponse {
   // 健診結果と予測
   // 最新の健診結果と1年後、3年後の健診結果を健康診断項目毎に返します。
   // 1年後の健診結果と3年後の値は、最新の健診結果から予測された値です。
+  // prediction_available が false の場合は、測定済みの現在値（current_value 等）のみ返却されます。
   repeated HealthCheckParameter parameters = 2;
+
+  // この健診結果に対してAI予測値が算出されているか。
+  // false の場合は、各パラメータの current_value 等の検査結果のみが有効。
+  bool prediction_available = 3;
 }
 
 message UploadHealthCheckResultRequest { HealthCheckUploadData data = 1; }
@@ -112,6 +120,9 @@ message HealthCheckResultSummary {
 
   // Name of the issuing or examining institution, if available.
   string issuer = 4;
+
+  // Whether AI prediction results are available for this health check result.
+  bool is_predictable = 5;
 }
 
 message ListHealthCheckResultsRequest {}
@@ -154,6 +165,7 @@ service HealthCheckService {
   // Predict health check result in the future.
   //
   // Errors:
+  //   - INVALID_ARGUMENT (3): id is invalid.
   //   - NOT_FOUND (5): The health check data is not found.
   rpc PredictHealthCheck(HealthCheckPredictionRequest) returns (HealthCheckPredictionResponse);
 
