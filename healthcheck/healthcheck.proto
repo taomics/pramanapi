@@ -93,6 +93,57 @@ message ImportMynaPortalHealthCheckResponse {
   int32 already_exists_count = 2;
 }
 
+enum HealthCheckRecordType {
+  HEALTH_CHECK_RECORD_TYPE_UNSPECIFIED = 0;
+  HEALTH_CHECK_RECORD_TYPE_QR_CODE = 1;     // QRコード取込
+  HEALTH_CHECK_RECORD_TYPE_MYNA_PORTAL = 2; // マイナポータル連携取込
+  HEALTH_CHECK_RECORD_TYPE_MANUAL = 3;      // マニュアル入力
+}
+
+message HealthCheckResultSummary {
+  // Health check result ID (UUID).
+  string id = 1;
+
+  // Health check date.
+  taomics.praman.Date date = 2;
+
+  // Record type indicating how the result was imported.
+  HealthCheckRecordType record_type = 3;
+
+  // Name of the issuing or examining institution, if available.
+  string issuer = 4;
+}
+
+message ListHealthCheckResultsRequest {}
+
+message ListHealthCheckResultsResponse {
+  // Health check results ordered by date descending.
+  repeated HealthCheckResultSummary results = 1;
+}
+
+message DownloadHealthCheckResultRequest {
+  // Health check result ID (UUID).
+  string id = 1;
+}
+
+message DownloadHealthCheckResultResponse {
+  // Exported file payload (UTF-8 encoded JSON bytes).
+  bytes data = 1;
+
+  // Suggested file name (e.g. healthcheck_2024-05-10.json).
+  string file_name = 2;
+
+  // MIME content type (e.g. application/json).
+  string content_type = 3;
+}
+
+message DeleteHealthCheckResultRequest {
+  // Health check result ID (UUID).
+  string id = 1;
+}
+
+message DeleteHealthCheckResultResponse {}
+
 // HealthCheckService
 //
 // Common Errors:
@@ -124,4 +175,24 @@ service HealthCheckService {
   //   - UNAVAILABLE (14): Myna Portal API is temporarily unavailable (e.g. maintenance or timeout).
   rpc ImportMynaPortalHealthCheck(ImportMynaPortalHealthCheckRequest)
       returns (ImportMynaPortalHealthCheckResponse);
+
+  // List imported health check results for the current user.
+  rpc ListHealthCheckResults(ListHealthCheckResultsRequest)
+      returns (ListHealthCheckResultsResponse);
+
+  // Download a health check result as a portable JSON file.
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): id is empty or invalid.
+  //   - NOT_FOUND (5): The health check result is not found.
+  rpc DownloadHealthCheckResult(DownloadHealthCheckResultRequest)
+      returns (DownloadHealthCheckResultResponse);
+
+  // Delete a health check result for the current user.
+  //
+  // Errors:
+  //   - INVALID_ARGUMENT (3): id is empty or invalid.
+  //   - NOT_FOUND (5): The health check result is not found.
+  rpc DeleteHealthCheckResult(DeleteHealthCheckResultRequest)
+      returns (DeleteHealthCheckResultResponse);
 }
